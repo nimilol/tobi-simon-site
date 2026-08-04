@@ -1,0 +1,75 @@
+/* ═══════════════════════════════════════════════════════════
+   SHARED — tokens, resets and small components used by both
+   index.html (public site) and admin.html (owner dashboard).
+   Change a token here and it updates on both pages.
+   ═══════════════════════════════════════════════════════════ */
+
+:root{
+  --ink:#16130F; --umber:#241D17; --umber-lo:#1C1712;
+  --cognac:#B8763E; --brass:#E0A868;
+  --concrete:#8C8781; --graphite:#3A3733; --chalk:#EDE9E4;
+  --wash:linear-gradient(140deg,#B8763E 0%,#6B5A4D 46%,#3A3733 100%);
+  --display:'Bricolage Grotesque',system-ui,sans-serif;
+  --body:'Instrument Sans',system-ui,sans-serif;
+  --mono:'Space Mono',ui-monospace,monospace;
+  --gut:clamp(1.25rem,4vw,3.5rem);
+  --max:1240px; --nav-h:68px; --r:4px;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--nav-h) + 12px)}
+body{margin:0;background:var(--ink);color:var(--concrete);
+  font-family:var(--body);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+body[data-locked="true"]{overflow:hidden}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,textarea,select{font:inherit}
+iframe{border:0;display:block}
+:focus-visible{outline:2px solid var(--brass);outline-offset:3px}
+
+.shell{width:100%;max-width:var(--max);margin-inline:auto;padding-inline:var(--gut)}
+.section{padding-block:clamp(4.5rem,9vw,8rem);position:relative}
+.section--tight{padding-block:clamp(3rem,6vw,5rem)}
+h1,h2,h3,h4{font-family:var(--display);color:var(--chalk);margin:0;line-height:1.02;letter-spacing:-.025em}
+.eyebrow{font-family:var(--mono);font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--cognac);margin:0 0 1.1rem;display:flex;align-items:center;gap:.7rem}
+.eyebrow::after{content:"";flex:1;height:1px;background:var(--graphite)}
+.h-sec{font-size:clamp(2rem,5.2vw,3.4rem);font-weight:800}
+.lede{max-width:58ch;margin-top:1.1rem;font-size:1.05rem}
+.skip{position:absolute;left:-9999px;top:0;z-index:300;background:var(--brass);
+  color:var(--ink);padding:.7rem 1.1rem;font-weight:600}
+.skip:focus{left:1rem;top:1rem}
+
+/* form + status components (login card, admin editors) */
+.field{margin-bottom:1rem}
+.field__l{display:block;font-family:var(--mono);font-size:.64rem;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--concrete);margin-bottom:.45rem}
+.field__i{width:100%;background:var(--ink);border:1px solid var(--graphite);border-radius:var(--r);
+  padding:.72rem .85rem;color:var(--chalk);font-size:.92rem}
+.field__i:focus{border-color:var(--cognac);outline:none}
+textarea.field__i{min-height:82px;resize:vertical}
+.note{font-family:var(--mono);font-size:.66rem;line-height:1.7;color:var(--concrete);margin-top:1.1rem}
+.msg{font-family:var(--mono);font-size:.7rem;margin-top:.9rem;min-height:1.1rem;line-height:1.5}
+.msg[data-kind="bad"]{color:#D98A6B}
+.msg[data-kind="ok"]{color:var(--brass)}
+
+.mini{font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;
+  padding:.5rem .8rem;border:1px solid var(--graphite);border-radius:var(--r);color:var(--chalk)}
+.mini:hover{border-color:var(--cognac);color:var(--brass)}
+.mini--solid{background:var(--cognac);color:var(--ink);border-color:var(--cognac);font-weight:700}
+.mini--solid:hover{color:var(--ink);opacity:.9}
+.mini-row{display:flex;gap:.55rem;flex-wrap:wrap;margin-top:.9rem}
+.item{display:flex;justify-content:space-between;gap:.8rem;align-items:flex-start;
+  padding:.7rem 0;border-bottom:1px solid var(--graphite)}
+.item__t{font-size:.85rem;color:var(--chalk)}
+.item__s{font-family:var(--mono);font-size:.64rem;color:var(--concrete);margin-top:.15rem;
+  word-break:break-all;line-height:1.5}
+.item__x{font-family:var(--mono);font-size:.66rem;color:var(--concrete);flex:0 0 auto}
+.item__x:hover{color:#D98A6B}
+
+.toast{position:fixed;left:50%;bottom:1.6rem;transform:translate(-50%,180%);z-index:200;
+  background:var(--brass);color:var(--ink);font-family:var(--mono);font-size:.72rem;font-weight:700;
+  padding:.75rem 1.3rem;border-radius:var(--r);transition:transform .32s cubic-bezier(.2,.8,.2,1);
+  max-width:min(90vw,460px);text-align:center;line-height:1.5}
+.toast[data-show="true"]{transform:translate(-50%,0)}

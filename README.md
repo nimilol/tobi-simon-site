@@ -1,18 +1,29 @@
 # Tobi Simon — Artist Profile
 
-A one-page artist CV. Shows streaming performance, discography, achievements and
-tour history, with a private admin panel for the owner to keep it current.
+A one-page artist CV. Shows streaming performance, discography, a vertical video
+carousel, achievements, "My Story" photos and "My Voice" clips, and tour history —
+kept current from a separate owner dashboard (`admin.html`) rather than a panel
+bolted onto the public page.
 
 ```
 tobi-simon-site/
-├─ index.html              ← the whole public site
+├─ index.html              ← the public site (read-only)
+├─ admin.html              ← owner login + dashboard (separate page, not linked from search)
 ├─ assets/
+│  ├─ shared-data.js       ← CONFIG, DEFAULTS and data helpers — imported by both pages
+│  ├─ shared.css           ← tokens + form components shared by both pages
 │  └─ tobi-hero.jpg        ← add the portrait here (4:5 works best)
 ├─ supabase/
-│  ├─ schema.sql           ← run once in Supabase
+│  ├─ schema.sql           ← run once in Supabase (site content table + media storage bucket)
 │  └─ functions/stats/     ← fetches live Audiomack + YouTube numbers
 └─ README.md
 ```
+
+The owner login used to live behind a button on the public page. It's now its
+own page, `admin.html`, so the public site stays clean. It isn't linked from
+anywhere public and is marked `noindex` — bookmark it directly. The real
+protection isn't obscurity, it's that only your one Supabase account can
+write (see Step 2).
 
 ---
 
@@ -42,7 +53,11 @@ py -m http.server 8000
 
 Then visit `http://localhost:8000`.
 
-**Owner login in demo mode:** any email, password `demo`.
+**Owner login** is at `http://localhost:8000/admin.html`. `CONFIG.supabase.enabled`
+in `assets/shared-data.js` is already `true`, pointed at a real Supabase project —
+so login only works once you've completed Step 2 below (run `schema.sql`, create
+the one owner account). Set `enabled: false` there if you want demo mode
+(any email, password `demo`) while you're just looking at layout.
 
 ---
 
@@ -82,22 +97,28 @@ git push
 ## Step 2 — Real login and saving (Supabase, free tier)
 
 1. Create a project at supabase.com.
-2. **SQL Editor** → paste `supabase/schema.sql` → **Run**.
+2. **SQL Editor** → paste `supabase/schema.sql` → **Run**. This creates the
+   `site_content` table *and* the `media` storage bucket (with policies) that
+   `admin.html` uploads "My Story" photos and "My Voice" videos into.
 3. **Authentication → Users → Add user** — create ONE account for Tobi.
 4. **Authentication → Sign In / Providers → Email** — turn *off*
    "Allow new users to sign up". This is what stops strangers making accounts.
 5. **Project Settings → API** — copy the Project URL and the `anon` key.
-6. Open `index.html`, find the `CONFIG` block near the bottom, and fill in:
+6. Open `assets/shared-data.js`, find the `CONFIG` block near the top, and fill in:
 
 ```js
 supabase: {
+  enabled: true,
   url:     'https://xxxxxxxx.supabase.co',
   anonKey: 'eyJhbGciOi...'
 }
 ```
 
-The `anon` key is **meant** to be public — the database rules in `schema.sql`
-are what actually protect the data. Never paste the `service_role` key here.
+Both `index.html` and `admin.html` import this same file, so it only needs
+setting once. The `anon` key is **meant** to be public — the database rules
+in `schema.sql` are what actually protect the data. Never paste the
+`service_role` key here, and never commit a file containing your database
+password (see the note on `SQL security.txt` below).
 
 Push the change and the login is real.
 
@@ -141,10 +162,43 @@ saved numbers. It never shows a broken stat to a visitor.
 
 ---
 
+## Visitor statistics
+
+The dashboard shows unique visitors, total page views, average time on site,
+and how many people clicked through to email. To switch it on, re-run
+`supabase/schema.sql` (the whole file is safe to run again) — the
+**VISITOR STATS** block at the end creates the `site_events` table and the
+`get_site_stats()` function. Until you do, the Visitors panel just says it
+isn't set up yet.
+
+What is stored: an event type, a random per-tab id, and a duration in seconds.
+**No cookies, no IP addresses, no personal data**, so there is nothing here
+that needs a cookie banner. Visitors can only *append* events — reading the
+numbers requires being signed in as you.
+
+One honest limitation: because the counting happens in the visitor's browser,
+the figures are indicative rather than audit-grade. Ad blockers will miss some
+visits, and someone determined could inflate them. Fine for knowing whether a
+label opened your page; not something to quote in a contract.
+
+---
+
+## A note on `SQL security.txt`
+
+If you keep a scratch file with your Supabase database password or login in
+this folder, keep it named exactly `SQL security.txt` — it's already listed
+in `.gitignore` so a `git add .` can't sweep it into a commit. Better still:
+delete it once the password is saved somewhere like a password manager, and
+if it was ever committed or shared, rotate the database password from the
+Supabase dashboard (**Project Settings → Database**).
+
+---
+
 ## Changing the look
 
-All colours are at the very top of `index.html` under `:root`. Change one value
-there and it updates everywhere on the page — no need to hunt through the file.
+Colours, fonts and spacing tokens live in `assets/shared.css` under `:root` —
+shared by both `index.html` and `admin.html`. Change one value there and it
+updates everywhere on both pages.
 
 ```css
 --cognac: #B8763E;   /* the main brown accent */
