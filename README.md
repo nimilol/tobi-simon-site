@@ -1,90 +1,147 @@
-# Tobi Simon — Artist Profile
+# Tobi Simon — Music Portfolio
 
-A one-page artist CV. Shows streaming performance, discography, a vertical video
-carousel, achievements, "My Story" photos and "My Voice" clips, and tour history —
-kept current from a separate owner dashboard (`admin.html`) rather than a panel
-bolted onto the public page.
+A multi-page artist site: releases in a 3D coverflow you can play right on the
+page, music videos and live performances, shows with ticket links, a mailing
+list, and a booking page. Everything is edited from a private dashboard
+(`admin.html`) and goes live the moment you save.
+
+No build step, no install. Plain HTML, CSS and JavaScript on GitHub Pages,
+with Supabase for the content, uploads and sign-ups.
 
 ```
 tobi-simon-site/
-├─ index.html              ← the public site (read-only)
-├─ admin.html              ← owner login + dashboard (separate page, not linked from search)
+├─ index.html        Home: wordmark, latest release, coverflow, highlights
+├─ music.html        every release, tracklists, player, streaming numbers
+├─ videos.html       featured videos (music videos + interviews) and Live
+├─ shows.html        upcoming shows with tickets, past shows, booking card
+├─ about.html        bio, quick facts, milestones, "Behind the music" photos
+├─ contact.html      booking enquiry form, socials, mailing list
+├─ admin.html        owner login + dashboard (not linked anywhere, noindex)
+├─ 404.html
 ├─ assets/
-│  ├─ shared-data.js       ← CONFIG, DEFAULTS and data helpers — imported by both pages
-│  ├─ shared.css           ← tokens + form components shared by both pages
-│  └─ tobi-hero.jpg        ← add the portrait here (4:5 works best)
-├─ supabase/
-│  ├─ schema.sql           ← run once in Supabase (site content table + media storage bucket)
-│  └─ functions/stats/     ← fetches live Audiomack + YouTube numbers
-└─ README.md
+│  ├─ shared-data.js CONFIG, built-in content (DEFAULTS) and data helpers
+│  ├─ shared.css     colours, fonts, the liquid-glass system, buttons, forms
+│  ├─ site.css       public page layout and components
+│  ├─ site.js        nav/footer, auto-updating content, player, video lightbox
+│  ├─ coverflow.js   the 3D slideshow (releases, live clips, photos)
+│  └─ img/           portrait, built-in covers, favicon
+└─ supabase/
+   ├─ schema.sql     run in Supabase: content, uploads, stats, mailing list, live updates
+   └─ functions/stats/  optional live Audiomack + YouTube numbers
 ```
-
-The owner login used to live behind a button on the public page. It's now its
-own page, `admin.html`, so the public site stays clean. It isn't linked from
-anywhere public and is marked `noindex` — bookmark it directly. The real
-protection isn't obscurity, it's that only your one Supabase account can
-write (see Step 2).
 
 ---
 
-## Which numbers update on their own?
+## After this update: one thing to do
 
-| Platform | How it updates | Why |
-|---|---|---|
-| **Audiomack** | Automatic | Public API is open to read |
-| **YouTube Music** | Automatic | Official Data API, free tier |
-| **Spotify** | Typed in by Tobi | Spotify does not publish monthly listeners to outside apps |
-| **Apple Music** | Typed in by Tobi | Apple publishes no play counts at all |
-| **Boomplay** | Typed in by Tobi | No public API |
+**Re-run `supabase/schema.sql`** in Supabase (**SQL Editor → New query → paste → Run**).
+The whole file is safe to run again; nothing is lost. The new section at the
+bottom switches on:
 
-Manual is not a downgrade. A number Tobi copies from his own dashboard is the
-same number a label would see — it just needs a refresh now and then.
+- **live updates**, so open pages refresh themselves when you save
+- the **mailing list** table behind the "Hear it first" form
+- logging of sign-ups in the visitor stats
+
+Until you do, the site still works: pages pick up changes on reload, and the
+sign-up form says it couldn't add the visitor.
+
+---
+
+## How auto-update works
+
+You never need to touch code to change what's on the site.
+
+1. **Save in admin**, and the content is written to Supabase.
+2. **Any page already open** gets told about the save (Supabase Realtime) and
+   re-draws itself within a second. No reload needed.
+3. **On every reload**, the page shows the last version it saw instantly, then
+   checks Supabase and swaps in anything newer. Visitors never see old built-in
+   content flash first.
+4. Pages also re-check when a visitor comes back to the tab.
+
+**Changing code** (HTML/CSS/JS files) is different: GitHub Pages caches files
+for about 10 minutes. Every page loads its CSS/JS with `?v=20261011`. When you
+change code, find-and-replace that number with today's date in all files, and
+everyone gets the new files on their next reload.
+
+---
+
+## Covers, photos and clips
+
+In **admin → Releases**, click **New release** or **Edit**, then choose the
+cover **image file** from your phone or computer. It's resized in the
+browser (longest side 1600px) and uploaded to your Supabase `media` bucket
+under `covers/`. Replacing a cover deletes the old file. You can still
+paste an image link instead.
+
+Tracks: paste the Audiomack song link (`audiomack.com/tobiis_simon/song/...`)
+or its embed code. Admin converts either into the embed player link.
+
+The portrait on the About page (admin → Profile), "Behind the music" photos and
+live clips (admin → Photos & clips) upload the same way.
+
+---
+
+## Videos
+
+Paste any YouTube link (a normal video, a Short, or youtu.be) and pick a type:
+
+| Type | Where it shows |
+|---|---|
+| Music video | Featured screen on Videos; the first one is also on Home |
+| Interview | Featured screen on Videos (filterable) |
+| Live performance | The **Live** coverflow on Videos, with venue, city and date |
+
+Use ↑ to reorder. The top music video or interview is the one featured on the
+home page. Videos only load from YouTube (privacy-enhanced mode) when someone
+presses play.
+
+## Shows
+
+Add a date, venue, city, billing, ticket status and ticket/RSVP link. Future
+dates appear under **Upcoming** with a **Tickets** (or **RSVP** for free
+events) button. Once the date passes they move to **Past shows** by
+themselves. With nothing upcoming, the page shows a "Bring Tobi to your stage"
+booking card.
+
+## Mailing list
+
+The "Hear it first" form is in every page footer and on Contact. Visitors can
+only *add* an email. Nobody can read the list from the public site. See the
+list in **admin → Audience** and use **Export CSV** to import it into
+Mailchimp, Brevo or Gmail.
+
+---
+
+## Liquid glass
+
+The nav, player, buttons, panels and lightbox use a glass material:
+translucent fill, background blur and saturation, a lit top edge, and a
+specular rim. Chrome and Edge also get real refraction through an SVG
+displacement filter. Taps squish slightly, with a light that follows your
+finger, as on iOS. Behind it all, the cover on screen is blown up and blurred
+into the page background, so the glass always has colour to bend.
+
+Everything falls back gracefully: no blur support gives solid dark panels,
+and "reduce motion" turns off ripples and autoplay.
 
 ---
 
 ## Run it locally
 
-Open `index.html` in a browser. That's it — no build step, no install.
-To see it on a proper local server (PowerShell, from the project folder):
-
 ```powershell
 py -m http.server 8000
 ```
 
-Then visit `http://localhost:8000`.
+Then open `http://localhost:8000`. The admin is at
+`http://localhost:8000/admin.html`. To try admin without a Supabase login, set
+`enabled: false` in `CONFIG.supabase` (`assets/shared-data.js`). Then any
+email with password `demo` works, and changes last for that session only.
+Don't commit that change.
 
-**Owner login** is at `http://localhost:8000/admin.html`. `CONFIG.supabase.enabled`
-in `assets/shared-data.js` is already `true`, pointed at a real Supabase project —
-so login only works once you've completed Step 2 below (run `schema.sql`, create
-the one owner account). Set `enabled: false` there if you want demo mode
-(any email, password `demo`) while you're just looking at layout.
+## Put it live (GitHub Pages)
 
----
-
-## Step 1 — Put it live for free
-
-Sign in to GitHub, create a new **empty public** repo called `tobi-simon-site`
-(no README, no .gitignore — the folder already has them).
-
-Then, in PowerShell, from inside the project folder:
-
-```powershell
-git init
-git add .
-git commit -m "Artist profile page"
-git branch -M main
-git remote add origin https://github.com/YOUR-USERNAME/tobi-simon-site.git
-git push -u origin main
-```
-
-> Note: on Mac/Linux tutorials you'll see commands chained with `&&`.
-> PowerShell rejects that — use `;` or separate lines, as above.
-
-Now turn on hosting: repo → **Settings** → **Pages** → Source: `main`, folder `/ (root)` → **Save**.
-
-Your site appears at `https://YOUR-USERNAME.github.io/tobi-simon-site/` in about a minute.
-
-**To update the site later:**
+Repo → **Settings → Pages** → Source: `main`, folder `/ (root)`. To update:
 
 ```powershell
 git add .
@@ -92,115 +149,51 @@ git commit -m "Describe what changed"
 git push
 ```
 
----
-
-## Step 2 — Real login and saving (Supabase, free tier)
+## Supabase setup (first time only)
 
 1. Create a project at supabase.com.
-2. **SQL Editor** → paste `supabase/schema.sql` → **Run**. This creates the
-   `site_content` table *and* the `media` storage bucket (with policies) that
-   `admin.html` uploads "My Story" photos and "My Voice" videos into.
-3. **Authentication → Users → Add user** — create ONE account for Tobi.
-4. **Authentication → Sign In / Providers → Email** — turn *off*
-   "Allow new users to sign up". This is what stops strangers making accounts.
-5. **Project Settings → API** — copy the Project URL and the `anon` key.
-6. Open `assets/shared-data.js`, find the `CONFIG` block near the top, and fill in:
+2. **SQL Editor** → paste `supabase/schema.sql` → **Run**.
+3. **Authentication → Users → Add user**: create ONE account for Tobi.
+4. **Authentication → Sign In / Providers → Email**: turn **off**
+   "Allow new users to sign up".
+5. **Project Settings → API**: copy the Project URL and the publishable
+   (`anon`) key into `CONFIG.supabase` in `assets/shared-data.js`.
 
-```js
-supabase: {
-  enabled: true,
-  url:     'https://xxxxxxxx.supabase.co',
-  anonKey: 'eyJhbGciOi...'
-}
-```
+The anon key is meant to be public. The rules in `schema.sql` protect the
+data. Never paste the `service_role` key into the site.
 
-Both `index.html` and `admin.html` import this same file, so it only needs
-setting once. The `anon` key is **meant** to be public — the database rules
-in `schema.sql` are what actually protect the data. Never paste the
-`service_role` key here, and never commit a file containing your database
-password (see the note on `SQL security.txt` below).
-
-Push the change and the login is real.
-
----
-
-## Step 3 — Live Audiomack + YouTube numbers
-
-Install the Supabase CLI, then from the project folder:
+## Live Audiomack + YouTube numbers (optional)
 
 ```powershell
-supabase login
-supabase link --project-ref YOUR-PROJECT-REF
 supabase functions deploy stats --no-verify-jwt
 supabase secrets set YOUTUBE_API_KEY="your-key"
 supabase secrets set YOUTUBE_CHANNEL_ID="UCxxxxxxxx"
-supabase secrets set AUDIOMACK_ARTIST="tobisimon"
+supabase secrets set AUDIOMACK_ARTIST="tobiis_simon"
 ```
 
-Get the YouTube key from Google Cloud Console → enable **YouTube Data API v3** →
-Credentials → Create API key.
-
-Then set the endpoint in `CONFIG`:
-
-```js
-liveEndpoint: 'https://xxxxxxxx.supabase.co/functions/v1/stats'
-```
-
-If this endpoint is ever unreachable, the page quietly falls back to the last
-saved numbers. It never shows a broken stat to a visitor.
-
----
-
-## Before sending the link to a label
-
-- [ ] Portrait added at `assets/tobi-hero.jpg`
-- [ ] Every `PLACEHOLDER` replaced with real content
-- [ ] Real profile URLs on all five platforms (`DATA.platforms[].url`)
-- [ ] Real booking email in `DATA.profile.email`
-- [ ] Public sign-ups turned off in Supabase
-- [ ] Opened on a phone to check it reads well
-
----
+Then set `liveEndpoint` in `CONFIG`. Until then, every number is typed in from
+admin → Numbers.
 
 ## Visitor statistics
 
-The dashboard shows unique visitors, total page views, average time on site,
-and how many people clicked through to email. To switch it on, re-run
-`supabase/schema.sql` (the whole file is safe to run again) — the
-**VISITOR STATS** block at the end creates the `site_events` table and the
-`get_site_stats()` function. Until you do, the Visitors panel just says it
-isn't set up yet.
-
-What is stored: an event type, a random per-tab id, and a duration in seconds.
-**No cookies, no IP addresses, no personal data**, so there is nothing here
-that needs a cookie banner. Visitors can only *append* events — reading the
-numbers requires being signed in as you.
-
-One honest limitation: because the counting happens in the visitor's browser,
-the figures are indicative rather than audit-grade. Ad blockers will miss some
-visits, and someone determined could inflate them. Fine for knowing whether a
-label opened your page; not something to quote in a contract.
-
----
+Admin → Overview shows unique visitors, page views, average time on site,
+booking clicks and mailing-list size. **No cookies, no IP addresses, no
+personal data**, so no cookie banner is needed. The figures are indicative
+(ad blockers miss some visits), so they're good for spotting trends, not for
+contracts.
 
 ## A note on `SQL security.txt`
 
-If you keep a scratch file with your Supabase database password or login in
-this folder, keep it named exactly `SQL security.txt` — it's already listed
-in `.gitignore` so a `git add .` can't sweep it into a commit. Better still:
-delete it once the password is saved somewhere like a password manager, and
-if it was ever committed or shared, rotate the database password from the
-Supabase dashboard (**Project Settings → Database**).
-
----
+If you keep a scratch file with database passwords in this folder, keep it named
+exactly `SQL security.txt`. It's in `.gitignore`. Better still, move the
+password to a password manager and delete the file.
 
 ## Changing the look
 
-Colours, fonts and spacing tokens live in `assets/shared.css` under `:root` —
-shared by both `index.html` and `admin.html`. Change one value there and it
-updates everywhere on both pages.
+Colours, fonts, radius and glass live at the top of `assets/shared.css`:
 
 ```css
---cognac: #B8763E;   /* the main brown accent */
---brass:  #E0A868;   /* the bright brown used on numbers */
+--gold:#D9A45B;     /* the one accent */
+--gold-hi:#F0C27F;  /* numbers, hover */
+--ink:#0B0A09;      /* page background */
 ```

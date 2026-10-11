@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache">
+<title>Shows — Tobi Simon</title>
+<meta name="description" content="Upcoming shows, concerts and ministrations by Tobi Simon, with tickets. Book Tobi for your church, concert or conference.">
+<meta name="theme-color" content="#0B0A09">
+<meta property="og:title" content="Shows — Tobi Simon">
+<meta property="og:description" content="Upcoming shows and tickets. Book Tobi for your event.">
+<meta property="og:image" content="assets/img/hero.jpg">
+<link rel="icon" href="assets/img/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/shared.css?v=20261011">
+<link rel="stylesheet" href="assets/site.css?v=20261011">
+</head>
+<body data-page="shows">
+
+<main id="main">
+  <header class="shell phead">
+    <h1>Shows</h1>
+    <p id="intro"></p>
+  </header>
+
+  <section class="shell" aria-label="Upcoming shows">
+    <div class="shows" id="upcoming"></div>
+  </section>
+
+  <section class="shell sec" id="pastWrap">
+    <h2 class="sec__h" style="margin-bottom:1.6rem">Past shows</h2>
+    <div class="past" id="past"></div>
+  </section>
+
+  <section class="shell" style="padding-bottom:clamp(2rem,5vw,4rem)" id="bookWrap">
+    <div class="bookcard glass">
+      <div>
+        <h2>Bring Tobi to your stage</h2>
+        <p>Church services, concerts, conferences and festivals, in Nigeria and abroad.
+          Share the date and city and management will reply within two business days.</p>
+      </div>
+      <a class="btn btn--gold press" href="contact.html" data-track="talk_click">Book Tobi</a>
+    </div>
+  </section>
+</main>
+
+<script type="module">
+import { onData, $, esc, fmtDate } from './assets/site.js?v=20261011';
+import { splitShows } from './assets/shared-data.js?v=20261011';
+
+const STATUS = { 'on-sale':'', free:'Free entry', 'sold-out':'Sold out', tba:'Tickets soon' };
+
+onData(DATA => {
+  const { upcoming, past } = splitShows(DATA.shows);
+
+  $('#intro').textContent = upcoming.length
+    ? `${upcoming.length === 1 ? 'One date' : upcoming.length + ' dates'} on the calendar. See you there.`
+    : 'No dates announced right now. Join the list at the bottom of the page and you’ll hear first.';
+
+  $('#upcoming').innerHTML = upcoming.map(s => {
+    const [y, m, d] = s.date.split('-').map(Number);
+    const dt = new Date(y, m - 1, d);
+    const btn = s.status === 'sold-out' || !s.ticketUrl ? ''
+      : `<a class="btn btn--gold btn--sm press" href="${esc(s.ticketUrl)}" target="_blank" rel="noopener">${s.status === 'free' ? 'RSVP' : 'Tickets'}</a>`;
+    return `<article class="show glass">
+      <div class="show__d"><b>${d}</b><span>${dt.toLocaleDateString('en-GB', { month:'short' })} ${y}</span></div>
+      <div>
+        <h3>${esc(s.venue)}</h3>
+        <p>${esc([s.city, s.billing, dt.toLocaleDateString('en-GB', { weekday:'long' })].filter(Boolean).join(' — '))}</p>
+      </div>
+      <div class="show__go">${STATUS[s.status] ? `<span class="show__st">${STATUS[s.status]}</span>` : ''}${btn}</div>
+    </article>`;
+  }).join('');
+
+  $('#pastWrap').style.display = past.length ? '' : 'none';
+  $('#past').innerHTML = past.map(s => `
+    <div class="past__r">
+      <span class="past__d">${esc(fmtDate(s.date))}</span>
+      <span class="past__v">${esc(s.venue)}</span>
+      <span class="past__c">${esc(s.city || '')}</span>
+    </div>`).join('');
+});
+</script>
+</body>
+</html>

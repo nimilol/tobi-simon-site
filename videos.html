@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache">
+<title>Videos — Tobi Simon</title>
+<meta name="description" content="Music videos, interviews and live ministrations from AfroGospel artist Tobi Simon.">
+<meta name="theme-color" content="#0B0A09">
+<meta property="og:title" content="Videos — Tobi Simon">
+<meta property="og:description" content="Music videos, interviews and live ministrations.">
+<meta property="og:image" content="assets/img/hero.jpg">
+<link rel="icon" href="assets/img/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/shared.css?v=20261011">
+<link rel="stylesheet" href="assets/site.css?v=20261011">
+</head>
+<body data-page="videos">
+
+<main id="main">
+  <header class="shell phead">
+    <h1>Videos</h1>
+    <p>Music videos, interviews and live ministrations.</p>
+  </header>
+
+  <section class="shell" id="featured" aria-label="Featured videos">
+    <div class="sec__top" id="segWrap" style="margin-bottom:1.2rem"></div>
+    <div class="screen" id="screen">
+      <div>
+        <div class="stage" id="stage"></div>
+        <div class="stage__meta" id="stageMeta"></div>
+      </div>
+      <div class="upnext" id="upnext" aria-label="More videos"></div>
+    </div>
+  </section>
+
+  <section class="shell sec live" id="live">
+    <div class="sec__top">
+      <div>
+        <h2 class="sec__h">Live</h2>
+        <p class="sec__p">On stage, in church and in session. Tap the centre clip to watch.</p>
+      </div>
+      <a class="btn btn--glass glass press" id="ytMore" target="_blank" rel="noopener">More on YouTube</a>
+    </div>
+    <div id="liveFlow"></div>
+    <div class="cfcap" id="liveCap" aria-live="polite"></div>
+  </section>
+</main>
+
+<script type="module">
+import { onData, $, $$, esc, PLAY, openVideo, ytEmbed, ytId, ytThumb, isVertical, videoWhere,
+         ambientFrom, stopTrack } from './assets/site.js?v=20261011';
+import { coverflow } from './assets/coverflow.js?v=20261011';
+
+const KIND = { music:'Music video', interview:'Interview', live:'Live' };
+let ALL = [], FEAT = [], LIVE = [], filter = 'all', cur = 0, flow = null, first = true;
+
+const thumbImg = (id, cls = '') =>
+  `<img class="${cls}" src="${ytThumb(id, 'maxresdefault')}" alt="" onerror="this.onerror=null;this.src='${ytThumb(id)}'">`;
+
+/* ── featured screen: one big stage + an up-next list ── */
+function shown(){ return filter === 'all' ? FEAT : FEAT.filter(v => v.kind === filter); }
+
+function paintSeg(){
+  const kinds = [...new Set(FEAT.map(v => v.kind))];
+  $('#segWrap').innerHTML = kinds.length > 1 ? `<div class="seg glass" role="group" aria-label="Filter videos">
+    ${[['all','All'], ...kinds.map(k => [k, KIND[k] ? KIND[k] + 's' : k])].map(([k, l]) =>
+      `<button class="press" data-filter="${k}" aria-pressed="${filter === k}">${esc(l)}</button>`).join('')}</div>` : '';
+}
+
+function paintStage(play = false){
+  const list = shown();
+  $('#featured').style.display = list.length ? '' : 'none';
+  if (!list.length) return;
+  cur = Math.min(cur, list.length - 1);
+  const v = list[cur], id = ytId(v.url);
+  const stage = $('#stage');
+  stage.dataset.vertical = String(isVertical(v));
+  stage.innerHTML = play
+    ? `${thumbImg(id, 'stage__bg')}<iframe src="${ytEmbed(id)}" title="${esc(v.title)}"
+         allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`
+    : `${thumbImg(id, 'stage__bg')}${thumbImg(id, 'stage__fg')}
+       <button class="card__play glass press" data-stage-play aria-label="Play ${esc(v.title)}">${PLAY}</button>`;
+  if (play) stopTrack();   // one sound at a time
+  $('#stageMeta').innerHTML = `<h2>${esc(v.title)}</h2>
+    <p>${esc([KIND[v.kind], videoWhere(v)].filter(Boolean).join(' — '))}</p>`;
+
+  $('#screen').classList.toggle('screen--solo', list.length < 2);
+  $('#upnext').innerHTML = list.length < 2 ? '' : list.map((x, i) => `
+    <button class="upnext__i press" data-pick="${i}" aria-current="${i === cur}">
+      ${thumbImg(ytId(x.url))}
+      <span><strong>${esc(x.title)}</strong><small>${esc(KIND[x.kind] || 'Video')}</small></span>
+    </button>`).join('');
+}
+
+/* ── live: YouTube clips + clips uploaded in admin, as a coverflow ── */
+function liveCard(it){
+  const media = it.file
+    ? `<video src="${esc(it.file)}#t=0.5" muted playsinline preload="metadata"></video>`
+    : thumbImg(ytId(it.url));
+  return `<div class="card__art">${media}
+    <button class="card__play glass press" data-live-play aria-label="Play ${esc(it.title || 'clip')}">${PLAY}</button></div>`;
+}
+function liveCaption(i){
+  const it = LIVE[i], cap = $('#liveCap');
+  cap.dataset.swap = 'false'; void cap.offsetWidth; cap.dataset.swap = 'true';
+  cap.innerHTML = `<h3>${esc(it.title || 'Live')}</h3>${videoWhere(it) ? `<p>${esc(videoWhere(it))}</p>` : ''}`;
+}
+
+onData(DATA => {
+  ALL = (DATA.videos || []).filter(v => ytId(v.url));
+  FEAT = ALL.filter(v => v.kind !== 'live');
+  if (!FEAT.length) FEAT = ALL;          // no music videos yet: feature everything
+  if (!FEAT.some(v => filter === 'all' || v.kind === filter)) filter = 'all';
+  paintSeg();
+  paintStage();
+  if (FEAT[0]) ambientFrom(ytThumb(ytId(FEAT[0].url)));
+
+  LIVE = [
+    ...ALL.filter(v => v.kind === 'live'),
+    ...(DATA.media?.voice || []).map(m => ({ file: m.url, title: m.caption || 'Live clip', vertical: true, venue: '', city: '' }))
+  ];
+  $('#live').style.display = LIVE.length ? '' : 'none';
+  const yt = DATA.profile?.socials?.youtube;
+  $('#ytMore').style.display = yt ? '' : 'none';
+  if (yt) $('#ytMore').href = yt;
+  if (LIVE.length){
+    const keep = flow ? Math.min(flow.index, LIVE.length - 1) : 0;
+    flow = coverflow($('#liveFlow'), {
+      items: LIVE, label: 'Live clips', start: keep, intro: first,
+      render: liveCard, onChange: liveCaption,
+      onActivate: i => openVideo(LIVE[i])
+    });
+  }
+  first = false;
+});
+
+document.addEventListener('click', e => {
+  const f = e.target.closest('[data-filter]');
+  if (f){ filter = f.dataset.filter; cur = 0; paintSeg(); paintStage(); return; }
+  if (e.target.closest('[data-stage-play]')){ paintStage(true); return; }
+  const pick = e.target.closest('[data-pick]');
+  if (pick){
+    cur = Number(pick.dataset.pick);
+    paintStage(true);
+    if (matchMedia('(max-width:900px)').matches) $('#stage').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+  const lp = e.target.closest('[data-live-play]');
+  if (lp) openVideo(LIVE[Number(lp.closest('.cf__item').dataset.i)]);
+});
+</script>
+</body>
+</html>

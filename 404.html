@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Page not found — Tobi Simon</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Instrument+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#0B0A09;--gold:#D9A45B;--chalk:#F3EEE7;--text:#BDB5AB}
+  html,body{margin:0;height:100%;background:var(--ink);color:var(--text);font-family:'Instrument Sans',system-ui,sans-serif}
+  body{display:grid;place-items:center;text-align:center;padding:1.5rem;
+    background:radial-gradient(60% 50% at 50% 30%,rgba(217,164,91,.16),transparent 70%),var(--ink)}
+  h1{font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:800;color:var(--chalk);
+    font-size:clamp(2.4rem,8vw,4.5rem);letter-spacing:-.045em;margin:0}
+  p{margin:.8rem 0 1.8rem}
+  a{display:inline-block;background:var(--gold);color:#1A1208;font-weight:600;padding:.85rem 1.3rem;border-radius:10px;text-decoration:none}
+</style>
+</head>
+<body>
+  <div>
+    <h1>This page is off the setlist.</h1>
+    <p>The link may be old, or the page has moved.</p>
+    <a href="/" id="home">Back to the music</a>
+    <script>
+      /* on a github.io project site the home page lives under /repo-name/ */
+      if (location.hostname.endsWith('github.io'))
+        document.getElementById('home').href = '/' + location.pathname.split('/')[1] + '/';
+    </script>
+  </div>
+</body>
+</html>

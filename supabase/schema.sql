@@ -225,3 +225,67 @@ grant execute on function public.get_site_stats() to authenticated;
 --   select * from public.get_site_stats();
 --   -- run while signed in; returns a single row of totals
 -- ============================================================
+
+-- ============================================================
+-- REDESIGN ADDITIONS (October 2026) — safe to run more than once.
+-- ============================================================
+
+-- 1. LIVE UPDATES
+-- Lets open pages hear about a save the moment it happens, so the
+-- public site refreshes itself without a reload. Visitors still only
+-- get what the "public can read" policy above allows.
+do $$
+begin
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'site_content'
+  ) then
+    alter publication supabase_realtime add table public.site_content;
+  end if;
+end $$;
+
+-- 2. NEW EVENT KIND — 'signup' is logged when someone joins the list.
+alter table public.site_events drop constraint if exists site_events_kind_check;
+alter table public.site_events add constraint site_events_kind_check
+  check (kind in ('visit','leave','contact_click','talk_click','signup'));
+
+-- 3. MAILING LIST — the "Hear it first" form on every page.
+-- Visitors may ONLY add an address. They can't read the list, so
+-- nobody can scrape your fans' emails from the public page.
+create table if not exists public.subscribers (
+  id         bigint generated always as identity primary key,
+  email      text        not null unique
+             check (email = lower(email) and email ~ '^[^@\s]+@[^@\s]+\.[^@\s]+$' and length(email) <= 254),
+  source     text        check (length(source) <= 60),
+  created_at timestamptz not null default now()
+);
+
+alter table public.subscribers enable row level security;
+
+drop policy if exists "anyone can subscribe" on public.subscribers;
+create policy "anyone can subscribe"
+  on public.subscribers for insert
+  to anon, authenticated
+  with check (true);
+
+drop policy if exists "owner can read subscribers" on public.subscribers;
+create policy "owner can read subscribers"
+  on public.subscribers for select
+  to authenticated
+  using (true);
+
+drop policy if exists "owner can remove subscribers" on public.subscribers;
+create policy "owner can remove subscribers"
+  on public.subscribers for delete
+  to authenticated
+  using (true);
+
+-- ============================================================
+-- VERIFY (optional):
+--
+--   select * from pg_publication_tables where tablename = 'site_content';
+--   -- one row: realtime is on
+--
+--   select policyname, cmd from pg_policies where tablename = 'subscribers';
+--   -- three rows: insert (anon), select + delete (authenticated)
+-- ============================================================

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache">
+<title>About — Tobi Simon</title>
+<meta name="description" content="Tobi Simon is an AfroGospel artist, singer and minister of the Gospel based in Nigeria. Biography, milestones and photos.">
+<meta name="theme-color" content="#0B0A09">
+<meta property="og:title" content="About — Tobi Simon">
+<meta property="og:description" content="AfroGospel artist, singer and minister of the Gospel.">
+<meta property="og:type" content="profile">
+<meta property="og:image" content="assets/img/hero.jpg">
+<link rel="icon" href="assets/img/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/shared.css?v=20261011">
+<link rel="stylesheet" href="assets/site.css?v=20261011">
+</head>
+<body data-page="about">
+
+<main id="main">
+  <section class="shell about">
+    <figure class="portrait" style="margin:0"><img id="portrait" alt="Tobi Simon"></figure>
+    <div>
+      <h1 id="name">Tobi Simon</h1>
+      <p class="about__role" id="role"></p>
+      <div class="about__bio" id="bio"></div>
+      <dl class="facts" id="facts"></dl>
+    </div>
+  </section>
+
+  <section class="shell sec" id="milesWrap">
+    <h2 class="sec__h" style="margin-bottom:1.6rem">Milestones</h2>
+    <div class="miles" id="miles"></div>
+  </section>
+
+  <section class="shell sec story" id="storyWrap">
+    <div class="sec__top">
+      <div>
+        <h2 class="sec__h">Behind the music</h2>
+        <p class="sec__p">The road, the studio and everywhere in between.</p>
+      </div>
+    </div>
+    <div id="storyFlow"></div>
+    <div class="cfcap" id="storyCap" aria-live="polite"></div>
+  </section>
+</main>
+
+<script type="module">
+import { onData, $, esc, ambientFrom } from './assets/site.js?v=20261011';
+import { coverflow } from './assets/coverflow.js?v=20261011';
+
+let STORY = [], flow = null, first = true;
+
+onData(DATA => {
+  const p = DATA.profile || {};
+  if (p.heroImage){ $('#portrait').src = p.heroImage; ambientFrom(p.heroImage); }
+  $('#name').textContent = p.name || 'Tobi Simon';
+  $('#role').textContent = p.role || '';
+  $('#bio').innerHTML = (p.bio || []).map(t => `<p>${esc(t)}</p>`).join('');
+  $('#facts').innerHTML = (DATA.facts || []).map(f =>
+    `<div><dt>${esc(f.k)}</dt><dd>${esc(f.v)}</dd></div>`).join('');
+
+  const miles = DATA.achievements || [];
+  $('#milesWrap').style.display = miles.length ? '' : 'none';
+  $('#miles').innerHTML = miles.map(a => `
+    <article class="mile"><div class="mile__d">${esc(a.date)}</div>
+      <div><h3>${esc(a.title)}</h3>${a.text ? `<p>${esc(a.text)}</p>` : ''}</div></article>`).join('');
+
+  STORY = DATA.media?.story || [];
+  $('#storyWrap').style.display = STORY.length ? '' : 'none';
+  if (STORY.length){
+    const keep = flow ? Math.min(flow.index, STORY.length - 1) : 0;
+    flow = coverflow($('#storyFlow'), {
+      items: STORY, label: 'Photos', start: keep, intro: first, autoplay: 5200,
+      render: m => `<div class="card__art"><img src="${esc(m.url)}" alt="${esc(m.caption || 'Photo')}" draggable="false"></div>`,
+      onChange: i => {
+        const m = STORY[i], cap = $('#storyCap');
+        cap.innerHTML = (m.caption ? `<p style="color:var(--chalk)">${esc(m.caption)}</p>` : '') +
+          (m.link ? `<a class="btn btn--quiet" href="${esc(m.link)}" target="_blank" rel="noopener">Read more</a>` : '');
+      }
+    });
+  }
+  first = false;
+});
+</script>
+</body>
+</html>

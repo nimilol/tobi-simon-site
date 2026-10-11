@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache">
+<title>Booking &amp; contact — Tobi Simon</title>
+<meta name="description" content="Book Tobi Simon for ministrations, concerts, conferences, features and brand partnerships.">
+<meta name="theme-color" content="#0B0A09">
+<meta property="og:title" content="Book Tobi Simon">
+<meta property="og:description" content="Ministrations, concerts, conferences, features and brand partnerships.">
+<meta property="og:image" content="assets/img/hero.jpg">
+<link rel="icon" href="assets/img/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/shared.css?v=20261011">
+<link rel="stylesheet" href="assets/site.css?v=20261011">
+</head>
+<body data-page="contact">
+
+<main id="main">
+  <header class="shell phead">
+    <h1>Booking &amp; contact</h1>
+    <p>Ministrations, concerts, conferences, features, sync and brand partnerships.
+      Management replies within two business days.</p>
+  </header>
+
+  <section class="shell contact">
+    <form class="panel glass" id="book" novalidate>
+      <h2>Booking enquiry</h2>
+      <div class="grid2">
+        <div class="field"><label class="field__l" for="bName">Your name</label>
+          <input class="field__i" id="bName" autocomplete="name" required></div>
+        <div class="field"><label class="field__l" for="bOrg">Church or organisation</label>
+          <input class="field__i" id="bOrg" autocomplete="organization"></div>
+        <div class="field"><label class="field__l" for="bType">What is it for?</label>
+          <select class="field__i" id="bType">
+            <option>Church service / ministration</option><option>Concert</option>
+            <option>Conference or festival</option><option>Feature / collaboration</option>
+            <option>Brand partnership</option><option>Something else</option></select></div>
+        <div class="field"><label class="field__l" for="bDate">Date</label>
+          <input class="field__i" id="bDate" type="date"></div>
+      </div>
+      <div class="field"><label class="field__l" for="bCity">City and venue</label>
+        <input class="field__i" id="bCity" placeholder="e.g. Lagos, Eko Convention Centre"></div>
+      <div class="field"><label class="field__l" for="bMsg">Anything else</label>
+        <textarea class="field__i" id="bMsg" placeholder="Audience size, budget, set length…"></textarea></div>
+      <div class="release__actions" style="align-items:center">
+        <button class="btn btn--gold press" type="submit">Send enquiry</button>
+        <span class="note" style="margin:0">Opens your email app with everything filled in.</span>
+      </div>
+      <p class="msg" id="bMsgOut" aria-live="polite"></p>
+    </form>
+
+    <aside class="panel glass">
+      <h2>Direct</h2>
+      <p class="direct">Email <a id="mail" href="#" data-track="contact_click"></a></p>
+      <div class="socials" id="socials"></div>
+      <h2 style="margin-top:2rem;margin-bottom:.3rem">Hear it first</h2>
+      <p style="margin:0">New songs, videos and show dates, straight to your inbox.</p>
+      <div id="signupSlot"></div>
+    </aside>
+  </section>
+</main>
+
+<script type="module">
+import { onData, $, esc, icon, socialLinks, signupForm, track, fmtDate } from './assets/site.js?v=20261011';
+
+let EMAIL = '';
+$('#signupSlot').innerHTML = signupForm('contact');
+
+onData(DATA => {
+  EMAIL = DATA.profile?.email || '';
+  $('#mail').textContent = EMAIL;
+  $('#mail').href = 'mailto:' + EMAIL;
+  $('#socials').innerHTML = socialLinks(DATA).map(s =>
+    `<a class="press" href="${esc(s.url)}" target="_blank" rel="noopener">${icon(s.id)} ${esc(s.name)}</a>`).join('');
+});
+
+/* No server needed: the form becomes a pre-written email, so nothing is
+   lost if a mail server is down and replies go straight to management. */
+$('#book').addEventListener('submit', e => {
+  e.preventDefault();
+  const v = id => $('#' + id).value.trim();
+  const out = $('#bMsgOut');
+  if (!v('bName')){ out.dataset.kind = 'bad'; out.textContent = 'Please add your name.'; $('#bName').focus(); return; }
+  const subject = `Booking enquiry: ${v('bType')}${v('bDate') ? ' on ' + fmtDate(v('bDate')) : ''}`;
+  const body = [
+    `Name: ${v('bName')}`,
+    v('bOrg') && `Organisation: ${v('bOrg')}`,
+    `For: ${v('bType')}`,
+    v('bDate') && `Date: ${fmtDate(v('bDate'))}`,
+    v('bCity') && `Where: ${v('bCity')}`,
+    '', v('bMsg')
+  ].filter(x => x !== '' && x !== undefined && x !== false).join('\n');
+  track('contact_click');
+  out.dataset.kind = 'ok'; out.textContent = 'Opening your email app…';
+  location.href = `mailto:${EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+});
+</script>
+</body>
+</html>

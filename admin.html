@@ -4,88 +4,114 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex,nofollow">
+<meta http-equiv="Cache-Control" content="no-cache">
 <title>Tobi Simon — Admin</title>
-
+<link rel="icon" href="assets/img/icon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/shared.css">
+<link rel="stylesheet" href="assets/shared.css?v=20261011">
 
 <style>
-body{min-height:100vh}
+body{min-height:100vh;background:
+  radial-gradient(60% 40% at 70% 0%,rgba(217,164,91,.13),transparent 70%),var(--ink)}
 
 /* ── TOP BAR ── */
 .abar{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;
-  gap:1rem;padding:1rem var(--gut);border-bottom:1px solid var(--graphite);
-  background:rgba(22,19,15,.9);backdrop-filter:blur(10px)}
-.abar__mark{font-family:var(--display);font-weight:800;font-size:1.05rem;color:var(--chalk);letter-spacing:-.02em}
-.abar__mark span{color:var(--cognac)}
-.abar__mark small{display:block;font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--concrete);margin-top:.15rem;font-weight:400}
-.abar__links{display:flex;align-items:center;gap:.6rem}
-.abar__links a{font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--concrete)}
-.abar__links a:hover{color:var(--chalk)}
+  gap:1rem;padding:.8rem var(--gut);border-bottom:1px solid var(--line);
+  background:rgba(11,10,9,.72);-webkit-backdrop-filter:blur(18px) saturate(160%);backdrop-filter:blur(18px) saturate(160%)}
+.abar__mark{display:flex;align-items:center;gap:.6rem;font-family:var(--display);font-weight:800;color:var(--chalk)}
+.abar__mark svg{width:28px;height:28px;color:var(--gold)}
+.abar__mark small{display:block;font-family:var(--body);font-weight:500;font-size:.75rem;color:var(--mute)}
+.abar__links{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;justify-content:flex-end}
+.saved{font-size:.8rem;color:var(--mute)}
+.saved a{color:var(--gold-hi)}
 
-/* ── LOGIN CARD ── */
+/* ── LOGIN ── */
 .loginwrap{display:none;min-height:calc(100vh - 70px);place-items:center;padding:2rem var(--gut)}
 .loginwrap[data-show="true"]{display:grid}
-.logincard{width:100%;max-width:420px;background:var(--umber);border:1px solid var(--graphite);
-  border-radius:var(--r);padding:2.2rem}
-.logincard__t{font-family:var(--display);font-weight:800;font-size:1.7rem;color:var(--chalk)}
-.logincard__s{font-size:.9rem;margin:.5rem 0 1.7rem}
-.msg[data-kind="bad"]{color:#D98A6B}
-.msg[data-kind="ok"]{color:var(--brass)}
+.logincard{width:100%;max-width:420px;border-radius:22px;padding:2.2rem}
+.logincard > *{position:relative;z-index:2}
+.logincard h1{font-size:1.9rem;font-weight:800}
+.logincard p{font-size:.92rem;margin:.5rem 0 1.6rem}
 
 /* ── DASHBOARD ── */
-.dash{display:none;max-width:760px;margin-inline:auto;padding:2.4rem var(--gut) 6rem}
-.dash[data-show="true"]{display:block}
-.dash__h{font-family:var(--display);font-weight:800;font-size:2rem;color:var(--chalk);margin-bottom:.4rem}
-.dash__s{font-size:.92rem;margin-bottom:2.6rem}
-.admin__grp{margin-bottom:2.4rem;padding-bottom:2.4rem;border-bottom:1px solid var(--graphite)}
-.admin__grp:last-child{border-bottom:none}
-.admin__h{font-family:var(--mono);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;
-  color:var(--cognac);margin-bottom:1rem}
+.dash{display:none;max-width:1180px;margin-inline:auto;padding:2rem var(--gut) 6rem;
+  grid-template-columns:200px minmax(0,1fr);gap:2.4rem;align-items:start}
+.dash[data-show="true"]{display:grid}
+.idx{position:sticky;top:90px;display:grid;gap:.1rem}
+.idx a{padding:.5rem .7rem;border-radius:var(--r-sm);font-size:.9rem;color:var(--text)}
+.idx a:hover{background:rgba(255,250,242,.05);color:var(--chalk)}
+.idx h1{font-size:1.5rem;font-weight:800;margin:0 0 .9rem .7rem}
+@media (max-width:900px){
+  .dash{grid-template-columns:1fr}
+  .idx{position:static;display:flex;flex-wrap:wrap;gap:.3rem}
+  .idx h1{width:100%;margin-left:0}
+  .idx a{border:1px solid var(--line)}
+}
+.cards{display:grid;gap:1.2rem}
+.card{border-radius:20px;padding:clamp(1.2rem,2.6vw,1.8rem);scroll-margin-top:90px}
+.card > *{position:relative;z-index:2}
+.card__h{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap;margin-bottom:1.1rem}
+.card__h h2{font-size:1.35rem;font-weight:800}
+.card__h p{margin:.2rem 0 0;font-size:.88rem;color:var(--mute);flex-basis:100%}
+.sub{font-family:var(--display);font-weight:700;color:var(--chalk);font-size:1rem;margin:1.6rem 0 .8rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 1rem}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:0 1rem}
+@media (max-width:640px){ .grid2,.grid3{grid-template-columns:1fr} }
+.editor{border:1px solid var(--line-2);border-radius:16px;padding:1.2rem;margin-top:1rem;background:rgba(0,0,0,.18)}
+.editor[hidden]{display:none}
 
-.statrow{display:grid;grid-template-columns:1fr 120px;gap:.7rem;align-items:center;margin-bottom:.65rem}
-.statrow__l{font-family:var(--mono);font-size:.75rem;color:var(--chalk)}
-.statrow__l small{display:block;color:var(--concrete);font-size:.62rem;letter-spacing:.1em;
-  text-transform:uppercase;margin-top:.15rem}
-.statrow__i{background:var(--ink);border:1px solid var(--graphite);border-radius:var(--r);
-  padding:.55rem .65rem;color:var(--chalk);font-family:var(--mono);font-size:.82rem;text-align:right;width:100%}
-.statrow__i:disabled{opacity:.42;cursor:not-allowed}
-.statrow__i:focus{border-color:var(--cognac);outline:none}
+.statrow{display:grid;grid-template-columns:1fr 140px;gap:.7rem;align-items:center;margin-bottom:.6rem}
+.statrow__l{color:var(--chalk);font-weight:500}
+.statrow__l small{display:block;color:var(--mute);font-size:.75rem;font-weight:400}
+.statrow .field__i{text-align:right;font-family:var(--mono)}
+.statrow .field__i:disabled{opacity:.45;cursor:not-allowed}
 
 .statgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.7rem}
-.stattile{background:var(--umber);border:1px solid var(--graphite);border-radius:var(--r);
-  padding:1rem 1.1rem}
-.stattile__n{font-family:var(--display);font-weight:800;font-size:1.7rem;color:var(--brass);
-  line-height:1.1}
-.stattile__l{font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--concrete);margin-top:.35rem}
+.stattile{border:1px solid var(--line);border-radius:14px;padding:1rem 1.1rem;background:rgba(255,250,242,.03)}
+.stattile__n{font-family:var(--display);font-weight:800;font-size:1.8rem;color:var(--chalk);line-height:1.1}
+.stattile__l{font-size:.78rem;color:var(--mute);margin-top:.2rem}
 
-.item__thumb{width:44px;height:44px;object-fit:cover;border-radius:var(--r);flex:0 0 auto;
-  background:var(--umber-lo)}
-.item__row{display:flex;gap:.7rem;align-items:center;flex:1 1 auto;min-width:0}
-input[type="file"].field__i{padding:.55rem .7rem;font-family:var(--mono);font-size:.78rem}
+.thumb{width:52px;height:52px;object-fit:cover;border-radius:10px;flex:0 0 auto;background:var(--panel-2)}
+.thumb--wide{width:84px;height:48px}
+.item__row{display:flex;gap:.8rem;align-items:center;flex:1 1 auto;min-width:0}
+.item__act{display:flex;gap:.2rem;flex:0 0 auto}
+.item__act button{font-size:.8rem;color:var(--text);padding:.35rem .5rem;border-radius:8px}
+.item__act button:hover{color:var(--chalk);background:rgba(255,250,242,.06)}
+.item__act button[data-act="del"]:hover{color:var(--bad)}
+
+.cover{display:grid;grid-template-columns:120px 1fr;gap:1rem;align-items:start;margin-bottom:1rem}
+.cover__prev{width:120px;height:120px;border-radius:14px;object-fit:cover;background:var(--panel-2);
+  border:1px dashed var(--line-2)}
+.trow{display:grid;grid-template-columns:1fr 1.4fr auto;gap:.5rem;align-items:center;margin-bottom:.5rem}
+.trow .field__i{padding:.6rem .75rem;font-size:.88rem}
+@media (max-width:640px){ .trow{grid-template-columns:1fr auto} .trow input:nth-child(2){grid-column:1} }
+.vprev{width:100%;max-width:280px;aspect-ratio:16/9;object-fit:cover;border-radius:12px;background:var(--panel-2);display:block;margin-bottom:1rem}
+.vprev[hidden]{display:none}
+.subs{max-height:320px;overflow:auto}
 </style>
 </head>
 <body>
 
 <div class="abar">
-  <div class="abar__mark">Tobi<span>.</span>Simon <small>Owner dashboard</small></div>
+  <div class="abar__mark">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="16" fill="currentColor"/>
+      <path d="M9 14v4M12.5 11v10M16 7.5v17M19.5 11v10M23 14v4" stroke="#0B0A09" stroke-width="2.1" stroke-linecap="round"/></svg>
+    <div>Tobi Simon <small>Owner dashboard</small></div>
+  </div>
   <div class="abar__links">
-    <a href="index.html">&larr; Back to site</a>
+    <span class="saved" id="savedNote"></span>
+    <a class="mini" href="index.html" target="_blank" rel="noopener">View site</a>
     <button class="mini" id="signOut" style="display:none">Sign out</button>
   </div>
 </div>
 
 <!-- LOGIN -->
 <div class="loginwrap" id="loginWrap" data-show="true">
-  <div class="logincard">
-    <h1 class="logincard__t">Owner login</h1>
-    <p class="logincard__s">Sign in to update statistics, music, achievements, tour dates and
-      the photos &amp; videos shown on the public page.</p>
+  <form class="logincard glass" id="loginForm">
+    <h1>Owner login</h1>
+    <p>Sign in to update music, covers, videos, shows and everything else on the site.</p>
     <div class="field">
       <label class="field__l" for="email">Email</label>
       <input class="field__i" type="email" id="email" autocomplete="username">
@@ -94,213 +120,264 @@ input[type="file"].field__i{padding:.55rem .7rem;font-family:var(--mono);font-si
       <label class="field__l" for="pass">Password</label>
       <input class="field__i" type="password" id="pass" autocomplete="current-password">
     </div>
-    <div class="mini-row">
-      <button class="mini mini--solid" id="doLogin">Sign in</button>
-    </div>
+    <div class="mini-row"><button class="mini mini--solid" id="doLogin" type="submit">Sign in</button></div>
     <p class="msg" id="loginMsg"></p>
     <p class="note" id="loginNote"></p>
-  </div>
+  </form>
 </div>
 
 <!-- DASHBOARD -->
 <div class="dash" id="dash">
-  <h1 class="dash__h">Manage site</h1>
-  <p class="dash__s">Changes save straight to the live site.</p>
+  <nav class="idx" aria-label="Sections">
+    <h1>Manage</h1>
+    <a href="#overview">Overview</a>
+    <a href="#releases">Releases</a>
+    <a href="#videos">Videos</a>
+    <a href="#shows">Shows</a>
+    <a href="#uploads">Photos &amp; clips</a>
+    <a href="#numbers">Numbers</a>
+    <a href="#profile">Profile</a>
+    <a href="#milestones">Milestones</a>
+    <a href="#audience">Audience</a>
+    <a href="#backup">Backup</a>
+  </nav>
 
-  <div class="admin__grp">
-    <p class="admin__h">Visitors</p>
-    <div class="statgrid" id="visitorStats"></div>
-    <p class="note" id="statsNote" style="margin-top:.8rem"></p>
-    <div class="mini-row">
-      <button class="mini" id="refreshStats">Refresh</button>
-    </div>
+  <div class="cards">
+
+    <!-- OVERVIEW -->
+    <section class="card glass" id="overview">
+      <div class="card__h"><h2>Overview</h2>
+        <p>Every save goes live straight away. Pages already open update by themselves.</p></div>
+      <div class="statgrid" id="visitorStats"></div>
+      <p class="note" id="statsNote"></p>
+      <div class="mini-row"><button class="mini" id="refreshStats">Refresh</button></div>
+    </section>
+
+    <!-- RELEASES -->
+    <section class="card glass" id="releases">
+      <div class="card__h"><h2>Releases</h2>
+        <button class="mini mini--solid" id="newRelease">New release</button>
+        <p>Albums, EPs and singles. Upload the cover as an image file. It's resized for the web automatically.</p></div>
+      <div id="relList"></div>
+
+      <div class="editor" id="relEditor" hidden>
+        <p class="sub" style="margin-top:0" id="relEditorTitle">New release</p>
+        <div class="cover">
+          <img class="cover__prev" id="rArtPrev" alt="">
+          <div>
+            <div class="field"><label class="field__l" for="rArtFile">Cover image</label>
+              <input class="field__i" id="rArtFile" type="file" accept="image/*">
+              <p class="field__h">JPG or PNG, square works best. Large files are resized to 1600px.</p></div>
+            <div class="field"><label class="field__l" for="rArtUrl">…or paste an image link</label>
+              <input class="field__i" id="rArtUrl" placeholder="https://..."></div>
+          </div>
+        </div>
+        <div class="grid3">
+          <div class="field"><label class="field__l" for="rTitle">Title</label><input class="field__i" id="rTitle"></div>
+          <div class="field"><label class="field__l" for="rKind">Type</label>
+            <select class="field__i" id="rKind"><option>Single</option><option>EP</option><option>Album</option></select></div>
+          <div class="field"><label class="field__l" for="rYear">Year</label><input class="field__i" id="rYear" inputmode="numeric"></div>
+        </div>
+
+        <p class="sub">Tracks</p>
+        <p class="note" style="margin:-.4rem 0 .8rem">Paste the Audiomack song link, or its embed code. Either works.
+          Audiomack: open the song → Share → Embed.</p>
+        <div id="rTracks"></div>
+        <button class="mini" id="addTrackRow" type="button">+ Add track</button>
+
+        <p class="sub">Streaming links for this release <span class="note" style="font-family:var(--body);font-weight:400">(optional; falls back to the artist profile)</span></p>
+        <div class="grid2">
+          <div class="field"><label class="field__l" for="rL_audiomack">Audiomack</label><input class="field__i" id="rL_audiomack" placeholder="https://"></div>
+          <div class="field"><label class="field__l" for="rL_spotify">Spotify</label><input class="field__i" id="rL_spotify" placeholder="https://"></div>
+          <div class="field"><label class="field__l" for="rL_apple">Apple Music</label><input class="field__i" id="rL_apple" placeholder="https://"></div>
+          <div class="field"><label class="field__l" for="rL_youtube">YouTube Music</label><input class="field__i" id="rL_youtube" placeholder="https://"></div>
+        </div>
+        <div class="mini-row">
+          <button class="mini mini--solid" id="saveRelease">Save release</button>
+          <button class="mini" id="cancelRelease" type="button">Cancel</button>
+        </div>
+        <p class="msg" id="relMsg"></p>
+      </div>
+    </section>
+
+    <!-- VIDEOS -->
+    <section class="card glass" id="videos">
+      <div class="card__h"><h2>Videos</h2>
+        <p>Paste any YouTube link: a normal video, a Short or youtu.be. The first music video or interview is featured on the home page. "Live" videos go in the Live section.</p></div>
+      <div id="vidList"></div>
+      <div class="editor" id="vidEditor">
+        <p class="sub" style="margin-top:0" id="vidEditorTitle">Add a video</p>
+        <img class="vprev" id="vPrev" alt="" hidden>
+        <div class="field"><label class="field__l" for="vUrl">YouTube link</label>
+          <input class="field__i" id="vUrl" placeholder="https://youtube.com/watch?v=..."></div>
+        <div class="grid2">
+          <div class="field"><label class="field__l" for="vTitle">Title</label><input class="field__i" id="vTitle"></div>
+          <div class="field"><label class="field__l" for="vKind">Type</label>
+            <select class="field__i" id="vKind"><option value="music">Music video</option>
+              <option value="live">Live performance</option><option value="interview">Interview</option></select></div>
+        </div>
+        <div class="grid3">
+          <div class="field"><label class="field__l" for="vDate">Date</label><input class="field__i" id="vDate" type="date"></div>
+          <div class="field"><label class="field__l" for="vVenue">Venue / event</label><input class="field__i" id="vVenue"></div>
+          <div class="field"><label class="field__l" for="vCity">City</label><input class="field__i" id="vCity"></div>
+        </div>
+        <div class="mini-row">
+          <button class="mini mini--solid" id="saveVideo">Add video</button>
+          <button class="mini" id="cancelVideo" type="button" hidden>Cancel</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SHOWS -->
+    <section class="card glass" id="shows">
+      <div class="card__h"><h2>Shows</h2>
+        <p>Dates in the future appear under "Upcoming" with a tickets button. Once the date passes they move to "Past shows" on their own.</p></div>
+      <div id="showList"></div>
+      <div class="editor" id="showEditor">
+        <p class="sub" style="margin-top:0" id="showEditorTitle">Add a show</p>
+        <div class="grid3">
+          <div class="field"><label class="field__l" for="sDate">Date</label><input class="field__i" id="sDate" type="date"></div>
+          <div class="field"><label class="field__l" for="sVenue">Venue / event</label><input class="field__i" id="sVenue"></div>
+          <div class="field"><label class="field__l" for="sCity">City</label><input class="field__i" id="sCity"></div>
+        </div>
+        <div class="grid3">
+          <div class="field"><label class="field__l" for="sBilling">Billing</label>
+            <select class="field__i" id="sBilling"><option>Headline</option><option>Guest</option><option>Ministration</option>
+              <option>Festival</option><option>Support</option></select></div>
+          <div class="field"><label class="field__l" for="sStatus">Tickets</label>
+            <select class="field__i" id="sStatus"><option value="on-sale">On sale</option><option value="free">Free entry / RSVP</option>
+              <option value="tba">Coming soon</option><option value="sold-out">Sold out</option></select></div>
+          <div class="field"><label class="field__l" for="sTicket">Ticket / RSVP link</label><input class="field__i" id="sTicket" placeholder="https://"></div>
+        </div>
+        <div class="mini-row">
+          <button class="mini mini--solid" id="saveShow">Add show</button>
+          <button class="mini" id="cancelShow" type="button" hidden>Cancel</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- UPLOADS -->
+    <section class="card glass" id="uploads">
+      <div class="card__h"><h2>Photos &amp; live clips</h2>
+        <p>Photos appear as "Behind the music" on the About page. Video clips join the Live section on the Videos page. Max 50MB per file.</p></div>
+      <p class="sub" style="margin-top:0">Photos</p>
+      <div id="storyEditor"></div>
+      <div class="grid2" style="margin-top:1rem">
+        <div class="field"><label class="field__l" for="storyFile">Photo file</label>
+          <input class="field__i" id="storyFile" type="file" accept="image/*"></div>
+        <div class="field"><label class="field__l" for="storyCaption">Caption</label>
+          <input class="field__i" id="storyCaption" placeholder="Backstage before the Lagos show"></div>
+      </div>
+      <div class="field"><label class="field__l" for="storyLink">Link (optional)</label>
+        <input class="field__i" id="storyLink" placeholder="https://..."></div>
+      <button class="mini mini--solid" id="addStory">Upload photo</button>
+      <p class="note" id="storyStatus" style="margin-top:.6rem"></p>
+
+      <p class="sub">Live clips</p>
+      <div id="voiceEditor"></div>
+      <div class="grid2" style="margin-top:1rem">
+        <div class="field"><label class="field__l" for="voiceFile">Video file</label>
+          <input class="field__i" id="voiceFile" type="file" accept="video/*"></div>
+        <div class="field"><label class="field__l" for="voiceCaption">Caption</label>
+          <input class="field__i" id="voiceCaption" placeholder="Soundcheck, Lagos"></div>
+      </div>
+      <div class="field"><label class="field__l" for="voiceLink">Link (optional)</label>
+        <input class="field__i" id="voiceLink" placeholder="https://..."></div>
+      <button class="mini mini--solid" id="addVoice">Upload clip</button>
+      <p class="note" id="voiceStatus" style="margin-top:.6rem"></p>
+    </section>
+
+    <!-- NUMBERS -->
+    <section class="card glass" id="numbers">
+      <div class="card__h"><h2>Streaming numbers</h2>
+        <p>Locked rows fetch their own number. Everything else you type in from that platform's artist dashboard.</p></div>
+      <div id="statEditor"></div>
+      <div class="mini-row"><button class="mini mini--solid" id="saveStats">Save numbers</button></div>
+
+      <p class="sub">Top songs per platform</p>
+      <div class="field"><label class="field__l" for="tsPlatform">Platform</label>
+        <select class="field__i" id="tsPlatform"></select></div>
+      <div id="tsList"></div>
+      <div class="grid2" style="margin-top:.8rem">
+        <div class="field"><label class="field__l" for="tsTitle">Song title</label><input class="field__i" id="tsTitle"></div>
+        <div class="field"><label class="field__l" for="tsPlays">Plays on that platform</label>
+          <input class="field__i" id="tsPlays" type="number" min="0"></div>
+      </div>
+      <button class="mini mini--solid" id="addTs">Add song</button>
+    </section>
+
+    <!-- PROFILE -->
+    <section class="card glass" id="profile">
+      <div class="card__h"><h2>Profile</h2></div>
+      <div class="cover">
+        <img class="cover__prev" id="pHeroPrev" alt="" style="object-position:center 20%">
+        <div class="field"><label class="field__l" for="pHeroFile">Portrait photo (About page)</label>
+          <input class="field__i" id="pHeroFile" type="file" accept="image/*">
+          <div class="mini-row"><button class="mini" id="uploadHero" type="button">Upload portrait</button></div></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label class="field__l" for="pName">Artist name</label><input class="field__i" id="pName"></div>
+        <div class="field"><label class="field__l" for="pEmail">Booking email</label><input class="field__i" id="pEmail" type="email"></div>
+      </div>
+      <div class="field"><label class="field__l" for="pRole">Role line</label><input class="field__i" id="pRole"></div>
+      <div class="field"><label class="field__l" for="pTagline">Home page tagline</label><input class="field__i" id="pTagline"></div>
+      <div class="field"><label class="field__l" for="pBio">Biography</label>
+        <textarea class="field__i" id="pBio" style="min-height:200px"></textarea>
+        <p class="field__h">Leave a blank line between paragraphs.</p></div>
+      <div class="field"><label class="field__l" for="pFacts">Quick facts</label>
+        <textarea class="field__i" id="pFacts" style="min-height:140px"></textarea>
+        <p class="field__h">One per line, as <em>Label: value</em>. For example, <em>Based in: Nigeria</em>.</p></div>
+
+      <p class="sub">Social profiles</p>
+      <div class="grid2" id="socialEditor"></div>
+      <p class="sub">Streaming profiles</p>
+      <div class="grid2" id="linkEditor"></div>
+      <div class="mini-row"><button class="mini mini--solid" id="saveProfile">Save profile</button></div>
+    </section>
+
+    <!-- MILESTONES -->
+    <section class="card glass" id="milestones">
+      <div class="card__h"><h2>Milestones</h2></div>
+      <div id="achEditor"></div>
+      <div class="grid2" style="margin-top:1rem">
+        <div class="field"><label class="field__l" for="achDate">Date</label><input class="field__i" id="achDate" placeholder="March 2026"></div>
+        <div class="field"><label class="field__l" for="achTitle">Title</label><input class="field__i" id="achTitle"></div>
+      </div>
+      <div class="field"><label class="field__l" for="achText">Detail</label><textarea class="field__i" id="achText"></textarea></div>
+      <button class="mini mini--solid" id="addAch">Add milestone</button>
+    </section>
+
+    <!-- AUDIENCE -->
+    <section class="card glass" id="audience">
+      <div class="card__h"><h2>Mailing list</h2>
+        <p>People who joined from the website. Export the list to use with Mailchimp, Brevo or Gmail.</p></div>
+      <div class="subs" id="subList"></div>
+      <p class="note" id="subNote"></p>
+      <div class="mini-row">
+        <button class="mini" id="refreshSubs">Refresh</button>
+        <button class="mini" id="exportSubs">Export CSV</button>
+      </div>
+    </section>
+
+    <!-- BACKUP -->
+    <section class="card glass" id="backup">
+      <div class="card__h"><h2>Backup</h2></div>
+      <p class="note" style="margin-top:0">Copy everything as JSON: a safety net you can paste back if anything is ever lost.</p>
+      <div class="mini-row"><button class="mini" id="copyJson">Copy data as JSON</button></div>
+      <p class="note">Restore the written content (bio, music, numbers, milestones, shows, videos) to the
+        version built into the site files. Uploaded photos and clips are kept.</p>
+      <div class="mini-row"><button class="mini" id="resetContent">Restore built-in content</button></div>
+    </section>
   </div>
-
-  <div class="admin__grp">
-    <p class="admin__h">My Story — photos</p>
-    <p class="note" style="margin-top:0">Shown as a fading vertical carousel on the public page,
-      under Achievements. Keep files under 50MB.</p>
-    <div id="storyEditor"></div>
-    <div class="field" style="margin-top:1rem">
-      <label class="field__l" for="storyFile">Photo file</label>
-      <input class="field__i" id="storyFile" type="file" accept="image/*">
-    </div>
-    <div class="field">
-      <label class="field__l" for="storyCaption">Caption</label>
-      <input class="field__i" id="storyCaption" placeholder="Backstage before the Lagos show">
-    </div>
-    <div class="field">
-      <label class="field__l" for="storyLink">Link (optional)</label>
-      <input class="field__i" id="storyLink" placeholder="https://...">
-    </div>
-    <button class="mini mini--solid" id="addStory">Upload photo</button>
-    <p class="note" id="storyStatus" style="margin-top:.6rem"></p>
-  </div>
-
-  <div class="admin__grp">
-    <p class="admin__h">My Voice — videos</p>
-    <p class="note" style="margin-top:0">Vertical or landscape both work — landscape clips are
-      letterboxed on the public page rather than cropped. Keep files under 50MB.</p>
-    <div id="voiceEditor"></div>
-    <div class="field" style="margin-top:1rem">
-      <label class="field__l" for="voiceFile">Video file</label>
-      <input class="field__i" id="voiceFile" type="file" accept="video/*">
-    </div>
-    <div class="field">
-      <label class="field__l" for="voiceCaption">Caption</label>
-      <input class="field__i" id="voiceCaption" placeholder="Soundcheck, Lagos">
-    </div>
-    <div class="field">
-      <label class="field__l" for="voiceLink">Link (optional)</label>
-      <input class="field__i" id="voiceLink" placeholder="https://...">
-    </div>
-    <button class="mini mini--solid" id="addVoice">Upload video</button>
-    <p class="note" id="voiceStatus" style="margin-top:.6rem"></p>
-  </div>
-
-  <div class="admin__grp">
-    <p class="admin__h">Platform statistics</p>
-    <div id="statEditor"></div>
-    <p class="note">Locked rows fetch their own number. Everything else you type in from
-      that platform's artist dashboard.</p>
-    <div class="mini-row">
-      <button class="mini mini--solid" id="saveStats">Save statistics</button>
-      <button class="mini" id="refetch">Refresh live sources</button>
-    </div>
-  </div>
-
-  <div class="admin__grp">
-    <p class="admin__h">Top songs (shown on hover)</p>
-    <div class="field">
-      <label class="field__l" for="tsPlatform">Platform</label>
-      <select class="field__i" id="tsPlatform"></select>
-    </div>
-    <div id="tsList"></div>
-    <div class="field" style="margin-top:.8rem">
-      <label class="field__l" for="tsTitle">Song title</label>
-      <input class="field__i" id="tsTitle">
-    </div>
-    <div class="field">
-      <label class="field__l" for="tsPlays">Plays on that platform</label>
-      <input class="field__i" id="tsPlays" type="number" min="0">
-    </div>
-    <button class="mini mini--solid" id="addTs">Add song</button>
-  </div>
-
-  <div class="admin__grp">
-    <p class="admin__h">Albums</p>
-    <div id="albumEditor"></div>
-    <div class="field" style="margin-top:1rem">
-      <label class="field__l" for="aTitle">Album title</label>
-      <input class="field__i" id="aTitle">
-    </div>
-    <div class="field">
-      <label class="field__l" for="aYear">Year</label>
-      <input class="field__i" id="aYear">
-    </div>
-    <div class="field">
-      <label class="field__l" for="aArt">Cover image path or URL</label>
-      <input class="field__i" id="aArt" placeholder="assets/album-one.jpg">
-    </div>
-    <button class="mini mini--solid" id="addAlbum">Add album</button>
-  </div>
-
-  <div class="admin__grp">
-    <p class="admin__h">Tracks</p>
-    <div class="field">
-      <label class="field__l" for="trAlbum">Album</label>
-      <select class="field__i" id="trAlbum"></select>
-    </div>
-    <div id="trList"></div>
-    <div class="field" style="margin-top:.8rem">
-      <label class="field__l" for="trTitle">Track title</label>
-      <input class="field__i" id="trTitle">
-    </div>
-    <div class="field">
-      <label class="field__l" for="trEmbed">Embed URL</label>
-      <input class="field__i" id="trEmbed" placeholder="https://audiomack.com/embed/song/...">
-    </div>
-    <p class="note" style="margin-top:0">Audiomack: open the song → Share → Embed → copy the
-      link inside src="…". Spotify: Share → Embed track. YouTube: Share → Embed.</p>
-    <button class="mini mini--solid" id="addTrack">Add track</button>
-  </div>
-
-  <div class="admin__grp">
-    <p class="admin__h">Achievements</p>
-    <div id="achEditor"></div>
-    <div class="field" style="margin-top:1rem">
-      <label class="field__l" for="achDate">Date</label>
-      <input class="field__i" id="achDate" placeholder="March 2026">
-    </div>
-    <div class="field">
-      <label class="field__l" for="achTitle">Title</label>
-      <input class="field__i" id="achTitle">
-    </div>
-    <div class="field">
-      <label class="field__l" for="achText">Detail</label>
-      <textarea class="field__i" id="achText"></textarea>
-    </div>
-    <button class="mini mini--solid" id="addAch">Add achievement</button>
-  </div>
-
-  <div class="admin__grp">
-    <p class="admin__h">Tours &amp; performances</p>
-    <div id="tourEditor"></div>
-    <div class="field" style="margin-top:1rem">
-      <label class="field__l" for="tDate">Date</label>
-      <input class="field__i" id="tDate" placeholder="12 Sep 2026">
-    </div>
-    <div class="field">
-      <label class="field__l" for="tVenue">Venue</label>
-      <input class="field__i" id="tVenue">
-    </div>
-    <div class="field">
-      <label class="field__l" for="tCity">City</label>
-      <input class="field__i" id="tCity">
-    </div>
-    <div class="field">
-      <label class="field__l" for="tKind">Billing</label>
-      <select class="field__i" id="tKind">
-        <option>Headline</option><option>Support</option>
-        <option>Festival</option><option>Guest</option></select>
-    </div>
-    <button class="mini mini--solid" id="addTour">Add date</button>
-  </div>
-
-  <div class="admin__grp">
-    <p class="admin__h">Profile &amp; links</p>
-    <div class="field">
-      <label class="field__l" for="pRole">Role line</label>
-      <input class="field__i" id="pRole">
-    </div>
-    <div class="field">
-      <label class="field__l" for="pEmail">Booking email</label>
-      <input class="field__i" id="pEmail" type="email">
-    </div>
-    <div id="linkEditor"></div>
-    <button class="mini mini--solid" id="saveProfile" style="margin-top:.8rem">Save profile</button>
-  </div>
-
-  <div class="admin__grp">
-    <p class="admin__h">Backup</p>
-    <p class="note" style="margin-top:0">Copy everything as JSON — a safety net you can paste
-      back if anything is ever lost.</p>
-    <div class="mini-row"><button class="mini" id="copyJson">Copy data as JSON</button></div>
-    <p class="note">Restore the written content (bio, music, stats, achievements, tours) to the
-      version built into the site files. Your uploaded photos and videos are kept.</p>
-    <div class="mini-row">
-      <button class="mini" id="resetContent">Restore built-in content</button>
-    </div>
-  </div>
-
 </div>
 
-<div class="toast" id="toast"></div>
+<div class="toast glass glass--strong" id="toast" role="status"></div>
 
 <script type="module">
-import { CONFIG, DEFAULTS, esc, compact, isRealPayload, hydrate } from './assets/shared-data.js';
+import { CONFIG, DEFAULTS, esc, compact, isRealPayload, hydrate, ytId, ytThumb, showTime }
+  from './assets/shared-data.js?v=20261011';
 
-let DATA = structuredClone(DEFAULTS);
+let DATA = hydrate(null);
 
 const $  = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
@@ -315,14 +392,13 @@ function toast(text){
 /* ═══════════════════════════════════════════════════════════
    SUPABASE
    ═══════════════════════════════════════════════════════════ */
-let sb = null, signedIn = false;
+let sb = null;
 const connected = () => Boolean(CONFIG.supabase.enabled && CONFIG.supabase.url && CONFIG.supabase.anonKey);
 
 async function initSupabase(){
   $('#loginNote').textContent = connected()
     ? 'Signed-in sessions are remembered on this device.'
-    : 'Demo mode — any email with password "demo". Fill CONFIG.supabase for real accounts.';
-
+    : 'Demo mode: any email with password "demo". Changes last for this session only.';
   if (!connected()) return;
 
   try{
@@ -333,33 +409,36 @@ async function initSupabase(){
     toast('Could not reach Supabase');
     return;
   }
+  await loadContent();
+  const { data: sess } = await sb.auth.getSession();
+  if (sess?.session) showDashboard();
+}
 
-  const { data, error } = await sb.from('site_content')
-    .select('payload').eq('id', 1).maybeSingle();
+async function loadContent(){
+  const { data, error } = await sb.from('site_content').select('payload').eq('id', 1).maybeSingle();
   if (error) console.warn('Read failed:', error.message);
   else if (isRealPayload(data?.payload)) DATA = hydrate(data.payload);
-
-  const { data: sess } = await sb.auth.getSession();
-  if (sess?.session){ signedIn = true; showDashboard(); }
 }
 
 async function signIn(email, password){
-  if (!sb) return { ok: password === CONFIG.demoPassword,
-                    message: 'Demo mode: the password is "demo".' };
+  if (!sb) return { ok: !connected() && password === CONFIG.demoPassword,
+                    message: connected() ? 'Could not reach Supabase.' : 'Demo mode: the password is "demo".' };
   const { error } = await sb.auth.signInWithPassword({ email, password });
   return { ok: !error, message: error?.message };
 }
 
 async function persist(){
-  if (!sb){ toast('Saved for this session only — connect Supabase to keep it'); return; }
-  const { error } = await sb.from('site_content')
-    .upsert({ id: 1, payload: DATA }, { onConflict: 'id' });
+  const note = $('#savedNote');
+  if (!sb){ toast('Saved for this session only (demo mode)'); return true; }
+  const { error } = await sb.from('site_content').upsert({ id: 1, payload: DATA }, { onConflict: 'id' });
   if (error){
     console.error('Save failed:', error);
     toast('Save failed: ' + error.message);
-  } else {
-    toast('Saved');
+    return false;
   }
+  toast('Saved. The site is updated.');
+  note.innerHTML = `Saved ${new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' })}`;
+  return true;
 }
 
 function showDashboard(){
@@ -368,57 +447,8 @@ function showDashboard(){
   $('#signOut').style.display = '';
   renderAdmin();
   loadStats();
+  loadSubs();
 }
-
-/* ═══════════════════════════════════════════════════════════
-   VISITOR STATS — Postgres does the counting (get_site_stats),
-   so this never downloads the raw event rows.
-   ═══════════════════════════════════════════════════════════ */
-function readableTime(seconds){
-  const s = Number(seconds) || 0;
-  if (s < 60) return s + 's';
-  const m = Math.floor(s / 60), rest = s % 60;
-  return rest ? `${m}m ${rest}s` : `${m}m`;
-}
-
-function paintStats(rows){
-  $('#visitorStats').innerHTML = rows.map(r => `
-    <div class="stattile">
-      <div class="stattile__n">${esc(r.value)}</div>
-      <div class="stattile__l">${esc(r.label)}</div>
-    </div>`).join('');
-}
-
-async function loadStats(){
-  const note = $('#statsNote');
-  if (!sb){
-    paintStats([]);
-    note.textContent = 'Connect Supabase to collect visitor statistics.';
-    return;
-  }
-  note.textContent = 'Loading…';
-  const { data, error } = await sb.rpc('get_site_stats');
-  if (error){
-    paintStats([]);
-    note.textContent = error.message.includes('function')
-      ? 'Not set up yet — run the "VISITOR STATS" section of supabase/schema.sql.'
-      : 'Could not load statistics: ' + error.message;
-    return;
-  }
-  const s = Array.isArray(data) ? data[0] : data;
-  if (!s){ paintStats([]); note.textContent = 'No visits recorded yet.'; return; }
-
-  paintStats([
-    { label: 'Unique visitors', value: compact(s.unique_visitors) },
-    { label: 'Total page views', value: compact(s.total_visits) },
-    { label: 'Avg. time on site', value: readableTime(s.avg_seconds) },
-    { label: 'Email clicks',     value: compact(s.contact_clicks) },
-    { label: '“Let’s talk” clicks', value: compact(s.talk_clicks) }
-  ]);
-  note.textContent = 'Anonymous counts — no cookies, IP addresses or personal data are stored.';
-}
-
-$('#refreshStats').addEventListener('click', loadStats);
 function showLogin(){
   $('#loginWrap').dataset.show = 'true';
   $('#dash').dataset.show = 'false';
@@ -426,160 +456,405 @@ function showLogin(){
 }
 
 /* ═══════════════════════════════════════════════════════════
-   MEDIA UPLOADS — My Story (photos) / My Voice (videos)
+   UPLOADS — one helper for covers, portrait, photos and clips.
+   Images are resized in the browser first so a 12MB phone photo
+   becomes a crisp ~300KB file that loads fast for visitors.
    ═══════════════════════════════════════════════════════════ */
 const MAX_FILE_BYTES = 50 * 1024 * 1024;
 
-function renderMediaEditors(){
-  $('#storyEditor').innerHTML = (DATA.media.story || []).map((m, i) => `
-    <div class="item">
-      <div class="item__row">
-        <img class="item__thumb" src="${esc(m.url)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">
-        <div><div class="item__t">${esc(m.caption || 'Untitled photo')}</div>
-          <div class="item__s">${m.link ? esc(m.link) : 'No link'}</div></div>
-      </div>
-      <button class="item__x" data-del="story" data-i="${i}">Remove</button>
-    </div>`).join('') || '<p class="note" style="margin-top:0">No photos uploaded yet.</p>';
-
-  $('#voiceEditor').innerHTML = (DATA.media.voice || []).map((m, i) => `
-    <div class="item">
-      <div class="item__row">
-        <div class="item__thumb" style="display:grid;place-items:center;color:var(--concrete)">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-        </div>
-        <div><div class="item__t">${esc(m.caption || 'Untitled video')}</div>
-          <div class="item__s">${m.link ? esc(m.link) : 'No link'}</div></div>
-      </div>
-      <button class="item__x" data-del="voice" data-i="${i}">Remove</button>
-    </div>`).join('') || '<p class="note" style="margin-top:0">No videos uploaded yet.</p>';
+async function resizeImage(file, max = 1600, quality = .86){
+  if (!/^image\/(jpeg|png|webp)$/.test(file.type)) return file;   // gifs, svgs etc. as-is
+  try{
+    const bmp = await createImageBitmap(file);
+    const scale = Math.min(1, max / Math.max(bmp.width, bmp.height));
+    if (scale === 1 && file.size < 1.5e6) return file;
+    const c = document.createElement('canvas');
+    c.width = Math.round(bmp.width * scale); c.height = Math.round(bmp.height * scale);
+    c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+    const blob = await new Promise(r => c.toBlob(r, 'image/jpeg', quality));
+    return blob ? new File([blob], file.name.replace(/\.\w+$/, '') + '.jpg', { type: 'image/jpeg' }) : file;
+  }catch{ return file; }
 }
 
-async function uploadMedia(kind){
-  const fileInput = $(kind === 'story' ? '#storyFile' : '#voiceFile');
-  const captionInput = $(kind === 'story' ? '#storyCaption' : '#voiceCaption');
-  const linkInput = $(kind === 'story' ? '#storyLink' : '#voiceLink');
-  const status = $(kind === 'story' ? '#storyStatus' : '#voiceStatus');
-  const file = fileInput.files[0];
+const readAsDataUrl = f => new Promise((ok, bad) => {
+  const r = new FileReader(); r.onload = () => ok(r.result); r.onerror = bad; r.readAsDataURL(f);
+});
 
-  if (!file){ toast('Choose a file first'); return; }
-  if (file.size > MAX_FILE_BYTES){ toast('That file is over 50MB — compress it first'); return; }
-  if (!sb){ toast('Connect Supabase (CONFIG.supabase) to upload files'); return; }
-
-  status.textContent = 'Uploading…';
+/* → { url, path } or null. In demo mode the image is kept as a data
+   URL so you can still see the result. */
+async function uploadFile(prefix, file, { image = false } = {}){
+  if (!file) return null;
+  if (image) file = await resizeImage(file);
+  if (file.size > MAX_FILE_BYTES){ toast('That file is over 50MB. Compress it first.'); return null; }
+  if (!sb){
+    if (image) return { url: await readAsDataUrl(file), path: '' };
+    toast('Uploads need Supabase. Demo mode can’t store files.'); return null;
+  }
   const safeName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '_');
-  const path = `${kind}/${Date.now()}-${safeName}`;
+  const path = `${prefix}/${Date.now()}-${safeName}`;
+  const { error } = await sb.storage.from('media').upload(path, file, { contentType: file.type, cacheControl: '31536000' });
+  if (error){ toast('Upload failed: ' + error.message); return null; }
+  const { data: pub } = sb.storage.from('media').getPublicUrl(path);
+  return { url: pub.publicUrl, path };
+}
+async function removeStored(path){
+  if (!sb || !path) return;
+  const { error } = await sb.storage.from('media').remove([path]);
+  if (error) console.warn('Storage cleanup failed:', error.message);
+}
 
-  const { error: upErr } = await sb.storage.from('media').upload(path, file);
-  if (upErr){
-    status.textContent = '';
-    toast('Upload failed: ' + upErr.message);
+/* live preview of a chosen image file */
+function previewFile(input, img){
+  input.addEventListener('change', () => {
+    const f = input.files[0];
+    if (f) img.src = URL.createObjectURL(f);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════
+   VISITOR STATS
+   ═══════════════════════════════════════════════════════════ */
+function readableTime(seconds){
+  const s = Number(seconds) || 0;
+  if (s < 60) return s + 's';
+  const m = Math.floor(s / 60), rest = s % 60;
+  return rest ? `${m}m ${rest}s` : `${m}m`;
+}
+function paintStats(rows){
+  $('#visitorStats').innerHTML = rows.map(r => `
+    <div class="stattile"><div class="stattile__n">${esc(r.value)}</div>
+      <div class="stattile__l">${esc(r.label)}</div></div>`).join('');
+}
+let SUB_COUNT = null;
+async function loadStats(){
+  const note = $('#statsNote');
+  if (!sb){ paintStats([]); note.textContent = 'Connect Supabase to collect visitor statistics.'; return; }
+  note.textContent = 'Loading…';
+  const { data, error } = await sb.rpc('get_site_stats');
+  if (error){
+    paintStats([]);
+    note.textContent = error.message.includes('function')
+      ? 'Not set up yet. Run supabase/schema.sql in the Supabase SQL editor.'
+      : 'Could not load statistics: ' + error.message;
     return;
   }
-  const { data: pub } = sb.storage.from('media').getPublicUrl(path);
+  const s = Array.isArray(data) ? data[0] : data;
+  if (!s){ paintStats([]); note.textContent = 'No visits recorded yet.'; return; }
+  const rows = [
+    { label: 'Unique visitors',   value: compact(s.unique_visitors) },
+    { label: 'Page views',        value: compact(s.total_visits) },
+    { label: 'Avg. time on site', value: readableTime(s.avg_seconds) },
+    { label: 'Booking clicks',    value: compact(Number(s.contact_clicks || 0) + Number(s.talk_clicks || 0)) }
+  ];
+  if (SUB_COUNT !== null) rows.push({ label: 'Mailing list', value: compact(SUB_COUNT) });
+  paintStats(rows);
+  note.textContent = 'Anonymous counts. No cookies, IP addresses or personal data are stored.';
+}
+$('#refreshStats').addEventListener('click', loadStats);
 
-  DATA.media[kind].push({
-    url: pub.publicUrl,
-    path,
-    caption: captionInput.value.trim(),
-    link: linkInput.value.trim()
-  });
+/* ═══════════════════════════════════════════════════════════
+   RELEASES
+   ═══════════════════════════════════════════════════════════ */
+let relIdx = null;   // index being edited, null = new
 
-  fileInput.value = ''; captionInput.value = ''; linkInput.value = '';
+/* Accept the song page link, the embed link, or the whole <iframe> code. */
+function normalizeEmbed(raw){
+  let s = String(raw || '').trim();
+  const src = s.match(/src=["']([^"']+)["']/i);
+  if (src) s = src[1];
+  const am = s.match(/^https?:\/\/(?:www\.)?audiomack\.com\/(?!embed\/)([^/]+)\/(song|album|playlist)\/([^/?#]+)/i);
+  if (am) s = `https://audiomack.com/embed/${am[2]}/${am[1]}/${am[3]}`;
+  const sp = s.match(/^https?:\/\/open\.spotify\.com\/(track|album)\/([\w]+)/i);
+  if (sp) s = `https://open.spotify.com/embed/${sp[1]}/${sp[2]}`;
+  return s;
+}
+
+function renderReleases(){
+  $('#relList').innerHTML = DATA.albums.map((a, i) => `
+    <div class="item"><div class="item__row">
+        ${a.art ? `<img class="thumb" src="${esc(a.art)}" alt="" onerror="this.style.visibility='hidden'">` : '<span class="thumb"></span>'}
+        <div><div class="item__t">${esc(a.title)}</div>
+          <div class="item__s">${esc(a.kind || 'Album')} · ${esc(a.year || '—')} · ${(a.tracks || []).length} ${(a.tracks || []).length === 1 ? 'track' : 'tracks'}
+            ${a.art ? '' : ' · <span style="color:var(--bad)">no cover</span>'}</div></div></div>
+      <div class="item__act"><button data-rel="edit" data-i="${i}">Edit</button>
+        <button data-rel="del" data-act="del" data-i="${i}">Remove</button></div>
+    </div>`).join('') || '<p class="note" style="margin-top:0">No releases yet.</p>';
+}
+
+function trackRow(t = { title:'', embed:'' }){
+  return `<div class="trow">
+    <input class="field__i" data-f="title" placeholder="Track title" value="${esc(t.title)}">
+    <input class="field__i" data-f="embed" placeholder="Audiomack link or embed code" value="${esc(t.embed)}">
+    <div class="item__act"><button type="button" data-trow="up" aria-label="Move up">↑</button>
+      <button type="button" data-trow="del" data-act="del" aria-label="Remove track">✕</button></div></div>`;
+}
+
+function openRelease(i){
+  relIdx = i;
+  const a = i === null ? { title:'', kind:'Single', year: String(new Date().getFullYear()), art:'', links:{}, tracks:[{ title:'', embed:'' }] } : DATA.albums[i];
+  $('#relEditorTitle').textContent = i === null ? 'New release' : 'Edit “' + a.title + '”';
+  $('#rTitle').value = a.title || '';
+  $('#rKind').value = ['Single','EP','Album'].includes(a.kind) ? a.kind : 'Album';
+  $('#rYear').value = a.year || '';
+  $('#rArtFile').value = '';
+  $('#rArtPrev').src = a.art || '';
+  $('#rArtPrev').style.visibility = a.art ? '' : 'hidden';
+  $('#rArtUrl').value = a.artPath || String(a.art || '').startsWith('data:') ? '' : (a.art || '');
+  ['audiomack','spotify','apple','youtube'].forEach(k => $('#rL_' + k).value = a.links?.[k] || '');
+  $('#rTracks').innerHTML = (a.tracks || []).map(trackRow).join('');
+  $('#relMsg').textContent = '';
+  $('#relEditor').hidden = false;
+  $('#relEditor').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  $('#rTitle').focus({ preventScroll: true });
+}
+
+async function saveRelease(){
+  const title = $('#rTitle').value.trim();
+  const msg = $('#relMsg');
+  if (!title){ msg.dataset.kind = 'bad'; msg.textContent = 'Give the release a title.'; return; }
+  const btn = $('#saveRelease'); btn.disabled = true;
+
+  const isNew = relIdx === null;
+  const a = isNew ? { title, kind:'Single', year:'', art:'', artPath:'', links:{}, tracks:[] } : DATA.albums[relIdx];
+  a.title = title;
+  a.kind  = $('#rKind').value;
+  a.year  = $('#rYear').value.trim();
+  a.links = {};
+  ['audiomack','spotify','apple','youtube'].forEach(k => { const v = $('#rL_' + k).value.trim(); if (v) a.links[k] = v; });
+  a.tracks = $$('#rTracks .trow').map(r => ({
+    title: r.querySelector('[data-f="title"]').value.trim(),
+    embed: normalizeEmbed(r.querySelector('[data-f="embed"]').value)
+  })).filter(t => t.title);
+
+  const file = $('#rArtFile').files[0];
+  const pasted = $('#rArtUrl').value.trim();
+  const oldPath = a.artPath || '';
+  if (file){
+    msg.dataset.kind = ''; msg.textContent = 'Uploading cover…';
+    const up = await uploadFile('covers', file, { image: true });
+    if (!up){ btn.disabled = false; msg.textContent = ''; return; }
+    a.art = up.url; a.artPath = up.path;
+  } else if (pasted && pasted !== a.art){
+    a.art = pasted; a.artPath = '';
+  }
+  if (oldPath && oldPath !== a.artPath) removeStored(oldPath);   // replaced: tidy the old file
+
+  if (isNew) DATA.albums.push(a);
+  const ok = await persist();
+  btn.disabled = false;
+  if (ok){
+    $('#relEditor').hidden = true; relIdx = null;
+    msg.textContent = '';
+    renderAdmin();
+  }
+}
+
+$('#newRelease').addEventListener('click', () => openRelease(null));
+$('#cancelRelease').addEventListener('click', () => { $('#relEditor').hidden = true; relIdx = null; });
+$('#saveRelease').addEventListener('click', saveRelease);
+$('#addTrackRow').addEventListener('click', () => {
+  $('#rTracks').insertAdjacentHTML('beforeend', trackRow());
+  $$('#rTracks .trow').at(-1).querySelector('input').focus();
+});
+$('#rTracks').addEventListener('click', e => {
+  const b = e.target.closest('[data-trow]'); if (!b) return;
+  const row = b.closest('.trow');
+  if (b.dataset.trow === 'del') row.remove();
+  if (b.dataset.trow === 'up' && row.previousElementSibling) row.parentNode.insertBefore(row, row.previousElementSibling);
+});
+previewFile($('#rArtFile'), $('#rArtPrev'));
+$('#rArtFile').addEventListener('change', () => $('#rArtPrev').style.visibility = '');
+$('#rArtUrl').addEventListener('change', () => {
+  const v = $('#rArtUrl').value.trim();
+  if (v && !$('#rArtFile').files[0]){ $('#rArtPrev').src = v; $('#rArtPrev').style.visibility = ''; }
+});
+
+/* ═══════════════════════════════════════════════════════════
+   VIDEOS
+   ═══════════════════════════════════════════════════════════ */
+const VKIND = { music:'Music video', live:'Live', interview:'Interview' };
+let vidIdx = null;
+
+function renderVideos(){
+  $('#vidList').innerHTML = DATA.videos.map((v, i) => {
+    const id = ytId(v.url);
+    return `<div class="item"><div class="item__row">
+        ${id ? `<img class="thumb thumb--wide" src="${ytThumb(id, 'mqdefault')}" alt="">` : '<span class="thumb thumb--wide"></span>'}
+        <div><div class="item__t">${esc(v.title || 'Untitled')}</div>
+          <div class="item__s">${esc(VKIND[v.kind] || v.kind)}${v.venue ? ' · ' + esc(v.venue) : ''}${id ? '' : ' · <span style="color:var(--bad)">link not recognised</span>'}</div></div></div>
+      <div class="item__act">
+        <button data-vid="up" data-i="${i}" aria-label="Move up">↑</button>
+        <button data-vid="edit" data-i="${i}">Edit</button>
+        <button data-vid="del" data-act="del" data-i="${i}">Remove</button></div></div>`;
+  }).join('') || '<p class="note" style="margin-top:0">No videos yet.</p>';
+}
+function resetVideoForm(){
+  vidIdx = null;
+  ['vUrl','vTitle','vDate','vVenue','vCity'].forEach(id => $('#' + id).value = '');
+  $('#vKind').value = 'music';
+  $('#vPrev').hidden = true;
+  $('#vidEditorTitle').textContent = 'Add a video';
+  $('#saveVideo').textContent = 'Add video';
+  $('#cancelVideo').hidden = true;
+}
+$('#vUrl').addEventListener('input', () => {
+  const id = ytId($('#vUrl').value);
+  $('#vPrev').hidden = !id;
+  if (id) $('#vPrev').src = ytThumb(id, 'mqdefault');
+});
+$('#saveVideo').addEventListener('click', async () => {
+  const url = $('#vUrl').value.trim();
+  if (!ytId(url)){ toast('That doesn’t look like a YouTube link'); return; }
+  const v = { url, title: $('#vTitle').value.trim() || 'Untitled video', kind: $('#vKind').value,
+              date: $('#vDate').value, venue: $('#vVenue').value.trim(), city: $('#vCity').value.trim() };
+  if (vidIdx === null) DATA.videos.unshift(v); else DATA.videos[vidIdx] = v;
+  resetVideoForm(); renderVideos(); await persist();
+});
+$('#cancelVideo').addEventListener('click', resetVideoForm);
+$('#vidList').addEventListener('click', async e => {
+  const b = e.target.closest('[data-vid]'); if (!b) return;
+  const i = Number(b.dataset.i);
+  if (b.dataset.vid === 'edit'){
+    const v = DATA.videos[i]; vidIdx = i;
+    $('#vUrl').value = v.url; $('#vTitle').value = v.title || ''; $('#vKind').value = v.kind || 'music';
+    $('#vDate').value = /^\d{4}-\d{2}-\d{2}$/.test(v.date || '') ? v.date : '';
+    $('#vVenue').value = v.venue || ''; $('#vCity').value = v.city || '';
+    $('#vUrl').dispatchEvent(new Event('input'));
+    $('#vidEditorTitle').textContent = 'Edit video';
+    $('#saveVideo').textContent = 'Save changes';
+    $('#cancelVideo').hidden = false;
+    $('#vidEditor').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+  if (b.dataset.vid === 'up' && i > 0) [DATA.videos[i - 1], DATA.videos[i]] = [DATA.videos[i], DATA.videos[i - 1]];
+  if (b.dataset.vid === 'del'){ if (!confirm('Remove this video?')) return; DATA.videos.splice(i, 1); resetVideoForm(); }
+  renderVideos(); await persist();
+});
+
+/* ═══════════════════════════════════════════════════════════
+   SHOWS
+   ═══════════════════════════════════════════════════════════ */
+let showIdx = null;
+const SSTATUS = { 'on-sale':'On sale', free:'Free / RSVP', tba:'Coming soon', 'sold-out':'Sold out' };
+
+function renderShows(){
+  const today = new Date(); today.setHours(0,0,0,0);
+  const order = DATA.shows.map((s, i) => ({ s, i })).sort((x, y) => (showTime(y.s) || 0) - (showTime(x.s) || 0));
+  $('#showList').innerHTML = order.map(({ s, i }) => {
+    const past = !(showTime(s) >= today.getTime());
+    return `<div class="item"><div class="item__row"><div>
+        <div class="item__t">${esc(s.venue)}${past ? ' <span class="item__s">(past)</span>' : ''}</div>
+        <div class="item__s">${esc(s.date || 'No date')} · ${esc(s.city || '')} · ${esc(SSTATUS[s.status] || '')}</div></div></div>
+      <div class="item__act"><button data-show="edit" data-i="${i}">Edit</button>
+        <button data-show="del" data-act="del" data-i="${i}">Remove</button></div></div>`;
+  }).join('') || '<p class="note" style="margin-top:0">No shows yet. The Shows page shows a "Book Tobi" card meanwhile.</p>';
+}
+function resetShowForm(){
+  showIdx = null;
+  ['sDate','sVenue','sCity','sTicket'].forEach(id => $('#' + id).value = '');
+  $('#sBilling').value = 'Headline'; $('#sStatus').value = 'on-sale';
+  $('#showEditorTitle').textContent = 'Add a show';
+  $('#saveShow').textContent = 'Add show';
+  $('#cancelShow').hidden = true;
+}
+$('#saveShow').addEventListener('click', async () => {
+  const venue = $('#sVenue').value.trim();
+  if (!venue){ toast('Give the show a venue or event name'); return; }
+  if (!$('#sDate').value){ toast('Pick the date'); return; }
+  const s = { date: $('#sDate').value, venue, city: $('#sCity').value.trim(), billing: $('#sBilling').value,
+              status: $('#sStatus').value, ticketUrl: $('#sTicket').value.trim() };
+  if (showIdx === null) DATA.shows.push(s); else DATA.shows[showIdx] = s;
+  resetShowForm(); renderShows(); await persist();
+});
+$('#cancelShow').addEventListener('click', resetShowForm);
+$('#showList').addEventListener('click', async e => {
+  const b = e.target.closest('[data-show]'); if (!b) return;
+  const i = Number(b.dataset.i);
+  if (b.dataset.show === 'edit'){
+    const s = DATA.shows[i]; showIdx = i;
+    $('#sDate').value = /^\d{4}-\d{2}-\d{2}$/.test(s.date || '') ? s.date : '';
+    $('#sVenue').value = s.venue || ''; $('#sCity').value = s.city || '';
+    $('#sBilling').value = s.billing || 'Headline'; $('#sStatus').value = s.status || 'tba';
+    $('#sTicket').value = s.ticketUrl || '';
+    $('#showEditorTitle').textContent = 'Edit show';
+    $('#saveShow').textContent = 'Save changes';
+    $('#cancelShow').hidden = false;
+    $('#showEditor').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+  if (!confirm('Remove this show?')) return;
+  DATA.shows.splice(i, 1); resetShowForm(); renderShows(); await persist();
+});
+
+/* ═══════════════════════════════════════════════════════════
+   PHOTOS & CLIPS
+   ═══════════════════════════════════════════════════════════ */
+function renderMediaEditors(){
+  $('#storyEditor').innerHTML = (DATA.media.story || []).map((m, i) => `
+    <div class="item"><div class="item__row">
+        <img class="thumb" src="${esc(m.url)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">
+        <div><div class="item__t">${esc(m.caption || 'Untitled photo')}</div>
+          <div class="item__s">${m.link ? esc(m.link) : 'No link'}</div></div></div>
+      <div class="item__act"><button data-media="story" data-act="del" data-i="${i}">Remove</button></div></div>`).join('')
+    || '<p class="note" style="margin-top:0">No photos uploaded yet.</p>';
+  $('#voiceEditor').innerHTML = (DATA.media.voice || []).map((m, i) => `
+    <div class="item"><div class="item__row">
+        <video class="thumb" src="${esc(m.url)}#t=0.5" muted preload="metadata"></video>
+        <div><div class="item__t">${esc(m.caption || 'Untitled clip')}</div>
+          <div class="item__s">${m.link ? esc(m.link) : 'No link'}</div></div></div>
+      <div class="item__act"><button data-media="voice" data-act="del" data-i="${i}">Remove</button></div></div>`).join('')
+    || '<p class="note" style="margin-top:0">No clips uploaded yet.</p>';
+}
+async function uploadMedia(kind){
+  const p = kind === 'story' ? 'story' : 'voice';
+  const fileInput = $(`#${p}File`), cap = $(`#${p}Caption`), link = $(`#${p}Link`), status = $(`#${p}Status`);
+  const file = fileInput.files[0];
+  if (!file){ toast('Choose a file first'); return; }
+  status.textContent = 'Uploading…';
+  const up = await uploadFile(kind, file, { image: kind === 'story' });
   status.textContent = '';
+  if (!up) return;
+  DATA.media[kind].push({ url: up.url, path: up.path, caption: cap.value.trim(), link: link.value.trim() });
+  fileInput.value = cap.value = link.value = '';
   renderMediaEditors();
   await persist();
 }
-
-async function deleteMedia(kind, i){
-  const item = DATA.media[kind]?.[i];
-  if (!item) return;
+$('#addStory').addEventListener('click', () => uploadMedia('story'));
+$('#addVoice').addEventListener('click', () => uploadMedia('voice'));
+$('#uploads').addEventListener('click', async e => {
+  const b = e.target.closest('[data-media]'); if (!b) return;
+  const kind = b.dataset.media, i = Number(b.dataset.i);
+  const item = DATA.media[kind]?.[i]; if (!item) return;
   DATA.media[kind].splice(i, 1);
   renderMediaEditors();
   await persist();
-  if (sb && item.path){
-    const { error } = await sb.storage.from('media').remove([item.path]);
-    if (error) console.warn('Storage cleanup failed:', error.message);
-  }
-}
-
-$('#addStory').addEventListener('click', () => uploadMedia('story'));
-$('#addVoice').addEventListener('click', () => uploadMedia('voice'));
+  removeStored(item.path);
+});
 
 /* ═══════════════════════════════════════════════════════════
-   ADMIN EDITORS
+   NUMBERS
    ═══════════════════════════════════════════════════════════ */
-function renderAdmin(){
-  renderMediaEditors();
-
+function renderNumbers(){
   $('#statEditor').innerHTML = DATA.platforms.map(p => `
     <div class="statrow">
-      <div class="statrow__l">${esc(p.name)}<small>${p.live ? 'auto · locked' : 'manual entry'}</small></div>
-      <input class="statrow__i" type="number" min="0" data-pid="${esc(p.id)}"
-             value="${p.value}" ${p.live ? 'disabled' : ''}></div>`).join('');
-
-  const pSel = $('#tsPlatform');
-  const keepP = pSel.value;
-  pSel.innerHTML = DATA.platforms.map(p =>
-    `<option value="${esc(p.id)}">${esc(p.name)}</option>`).join('');
-  if (keepP) pSel.value = keepP;
+      <div class="statrow__l">${esc(p.name)}<small>${p.live ? 'automatic · locked' : 'typed in by you'} · ${esc(p.unit)}</small></div>
+      <input class="field__i" type="number" min="0" data-pid="${esc(p.id)}" value="${p.value}" ${p.live && CONFIG.liveEndpoint ? 'disabled' : ''}></div>`).join('');
+  const pSel = $('#tsPlatform'), keep = pSel.value;
+  pSel.innerHTML = DATA.platforms.map(p => `<option value="${esc(p.id)}">${esc(p.name)}</option>`).join('');
+  if (keep) pSel.value = keep;
   renderTopSongs();
-
-  const aSel = $('#trAlbum');
-  const keepA = aSel.value;
-  aSel.innerHTML = DATA.albums.map((a, i) =>
-    `<option value="${i}">${esc(a.title)}</option>`).join('');
-  if (keepA) aSel.value = keepA;
-  renderTrackList();
-
-  $('#albumEditor').innerHTML = DATA.albums.map((a, i) => `
-    <div class="item"><div><div class="item__t">${esc(a.title)}</div>
-      <div class="item__s">${esc(a.year)} · ${(a.tracks||[]).length} tracks</div></div>
-      <button class="item__x" data-del="album" data-i="${i}">Remove</button></div>`).join('');
-
-  $('#achEditor').innerHTML = DATA.achievements.map((a, i) => `
-    <div class="item"><div><div class="item__t">${esc(a.title)}</div>
-      <div class="item__s">${esc(a.date)}</div></div>
-      <button class="item__x" data-del="ach" data-i="${i}">Remove</button></div>`).join('');
-
-  $('#tourEditor').innerHTML = DATA.tours.map((t, i) => `
-    <div class="item"><div><div class="item__t">${esc(t.venue)}</div>
-      <div class="item__s">${esc(t.date)} · ${esc(t.city)}</div></div>
-      <button class="item__x" data-del="tour" data-i="${i}">Remove</button></div>`).join('');
-
-  $('#pRole').value  = DATA.profile.role || '';
-  $('#pEmail').value = DATA.profile.email || '';
-  $('#linkEditor').innerHTML = DATA.platforms.map(p => `
-    <div class="field"><label class="field__l">${esc(p.name)} profile link</label>
-      <input class="field__i" data-link="${esc(p.id)}" value="${esc(p.url || '')}"
-             placeholder="https://..."></div>`).join('');
 }
-
 function renderTopSongs(){
   const p = DATA.platforms.find(x => x.id === $('#tsPlatform').value);
   const songs = p && Array.isArray(p.top) ? p.top : [];
-  $('#tsList').innerHTML = songs.length
-    ? songs.map((s, i) => `
+  $('#tsList').innerHTML = songs.length ? songs.map((s, i) => `
       <div class="item"><div><div class="item__t">${esc(s.title)}</div>
         <div class="item__s">${compact(s.plays)} plays</div></div>
-        <button class="item__x" data-del="ts" data-i="${i}">Remove</button></div>`).join('')
+        <div class="item__act"><button data-ts="${i}" data-act="del">Remove</button></div></div>`).join('')
     : '<p class="note" style="margin-top:0">No songs added for this platform yet.</p>';
 }
-
-function renderTrackList(){
-  const ai = Number($('#trAlbum').value);
-  const album = DATA.albums[ai];
-  const tracks = album && Array.isArray(album.tracks) ? album.tracks : [];
-  $('#trList').innerHTML = tracks.length
-    ? tracks.map((t, i) => `
-      <div class="item"><div><div class="item__t">${esc(t.title)}</div>
-        <div class="item__s">${t.embed ? esc(t.embed) : 'No embed link — will not play'}</div></div>
-        <button class="item__x" data-del="track" data-i="${i}">Remove</button></div>`).join('')
-    : '<p class="note" style="margin-top:0">No tracks on this album yet.</p>';
-}
-
 function stamp(){
-  DATA.updated = new Date().toLocaleDateString('en-GB',
-    { day:'numeric', month:'long', year:'numeric' });
+  DATA.updated = new Date().toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' });
 }
 function snapshot(){
   const today = new Date().toISOString().slice(0,10);
@@ -589,11 +864,167 @@ function snapshot(){
   DATA.history.push(row);
   if (DATA.history.length > 400) DATA.history = DATA.history.slice(-400);
 }
+$('#saveStats').addEventListener('click', () => {
+  $$('#statEditor input').forEach(input => {
+    if (input.disabled) return;
+    const p = DATA.platforms.find(x => x.id === input.dataset.pid);
+    if (p) p.value = Number(input.value) || 0;
+  });
+  stamp(); snapshot(); renderNumbers(); persist();
+});
+$('#tsPlatform').addEventListener('change', renderTopSongs);
+$('#addTs').addEventListener('click', () => {
+  const title = $('#tsTitle').value.trim();
+  if (!title){ toast('Give the song a title'); return; }
+  const p = DATA.platforms.find(x => x.id === $('#tsPlatform').value);
+  if (!p) return;
+  p.top = Array.isArray(p.top) ? p.top : [];
+  p.top.push({ title, plays: Number($('#tsPlays').value) || 0 });
+  p.top.sort((a, b) => b.plays - a.plays);
+  $('#tsTitle').value = $('#tsPlays').value = '';
+  renderTopSongs(); persist();
+});
+$('#tsList').addEventListener('click', e => {
+  const b = e.target.closest('[data-ts]'); if (!b) return;
+  const p = DATA.platforms.find(x => x.id === $('#tsPlatform').value);
+  if (p?.top) p.top.splice(Number(b.dataset.ts), 1);
+  renderTopSongs(); persist();
+});
 
 /* ═══════════════════════════════════════════════════════════
-   WIRING
+   PROFILE
    ═══════════════════════════════════════════════════════════ */
-$('#doLogin').addEventListener('click', async () => {
+const SOCIALS = { instagram:'Instagram', tiktok:'TikTok', youtube:'YouTube channel', facebook:'Facebook', x:'X (Twitter)' };
+function renderProfile(){
+  const p = DATA.profile;
+  $('#pHeroPrev').src = p.heroImage || '';
+  $('#pName').value = p.name || '';
+  $('#pEmail').value = p.email || '';
+  $('#pRole').value = p.role || '';
+  $('#pTagline').value = p.tagline || '';
+  $('#pBio').value = (p.bio || []).join('\n\n');
+  $('#pFacts').value = (DATA.facts || []).map(f => `${f.k}: ${f.v}`).join('\n');
+  $('#socialEditor').innerHTML = Object.entries(SOCIALS).map(([k, l]) => `
+    <div class="field"><label class="field__l" for="so_${k}">${l}</label>
+      <input class="field__i" id="so_${k}" data-social="${k}" value="${esc(p.socials?.[k] || '')}" placeholder="https://"></div>`).join('');
+  $('#linkEditor').innerHTML = DATA.platforms.map(x => `
+    <div class="field"><label class="field__l">${esc(x.name)}</label>
+      <input class="field__i" data-link="${esc(x.id)}" value="${esc(x.url || '')}" placeholder="https://"></div>`).join('');
+}
+$('#saveProfile').addEventListener('click', () => {
+  const p = DATA.profile;
+  p.name    = $('#pName').value.trim() || 'Tobi Simon';
+  p.email   = $('#pEmail').value.trim();
+  p.role    = $('#pRole').value.trim();
+  p.tagline = $('#pTagline').value.trim();
+  p.bio     = $('#pBio').value.split(/\n\s*\n/).map(s => s.trim()).filter(Boolean);
+  DATA.facts = $('#pFacts').value.split('\n').map(l => {
+    const at = l.indexOf(':');
+    return at > 0 ? { k: l.slice(0, at).trim(), v: l.slice(at + 1).trim() } : null;
+  }).filter(f => f && f.k && f.v);
+  p.socials = p.socials || {};
+  $$('[data-social]').forEach(i => p.socials[i.dataset.social] = i.value.trim());
+  $$('[data-link]').forEach(i => { const x = DATA.platforms.find(y => y.id === i.dataset.link); if (x) x.url = i.value.trim(); });
+  persist();
+});
+previewFile($('#pHeroFile'), $('#pHeroPrev'));
+$('#uploadHero').addEventListener('click', async () => {
+  const file = $('#pHeroFile').files[0];
+  if (!file){ toast('Choose a photo first'); return; }
+  toast('Uploading portrait…');
+  const up = await uploadFile('portrait', file, { image: true });
+  if (!up) return;
+  const old = DATA.profile.heroPath;
+  DATA.profile.heroImage = up.url; DATA.profile.heroPath = up.path;
+  $('#pHeroFile').value = '';
+  if (await persist()) removeStored(old);
+});
+
+/* ═══════════════════════════════════════════════════════════
+   MILESTONES
+   ═══════════════════════════════════════════════════════════ */
+function renderMilestones(){
+  $('#achEditor').innerHTML = DATA.achievements.map((a, i) => `
+    <div class="item"><div><div class="item__t">${esc(a.title)}</div><div class="item__s">${esc(a.date)}</div></div>
+      <div class="item__act"><button data-ach="${i}" data-act="del">Remove</button></div></div>`).join('');
+}
+$('#addAch').addEventListener('click', () => {
+  const title = $('#achTitle').value.trim();
+  if (!title){ toast('Give the milestone a title'); return; }
+  DATA.achievements.unshift({ date: $('#achDate').value.trim() || '—', title, text: $('#achText').value.trim() });
+  $('#achDate').value = $('#achTitle').value = $('#achText').value = '';
+  renderMilestones(); persist();
+});
+$('#achEditor').addEventListener('click', e => {
+  const b = e.target.closest('[data-ach]'); if (!b) return;
+  DATA.achievements.splice(Number(b.dataset.ach), 1); renderMilestones(); persist();
+});
+
+/* ═══════════════════════════════════════════════════════════
+   MAILING LIST
+   ═══════════════════════════════════════════════════════════ */
+let SUBS = [];
+async function loadSubs(){
+  const note = $('#subNote');
+  if (!sb){ note.textContent = 'Connect Supabase to collect sign-ups.'; return; }
+  const { data, error } = await sb.from('subscribers').select('email,source,created_at').order('created_at', { ascending: false });
+  if (error){
+    note.textContent = /relation|does not exist|schema cache/i.test(error.message)
+      ? 'Not set up yet. Run supabase/schema.sql in the Supabase SQL editor.'
+      : 'Could not load the list: ' + error.message;
+    return;
+  }
+  SUBS = data || [];
+  SUB_COUNT = SUBS.length;
+  $('#subList').innerHTML = SUBS.map(s => `
+    <div class="item"><div><div class="item__t">${esc(s.email)}</div>
+      <div class="item__s">${new Date(s.created_at).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' })} · ${esc(s.source || '')}</div></div>
+      <div class="item__act"><button data-sub="${esc(s.email)}" data-act="del">Remove</button></div></div>`).join('');
+  note.textContent = SUBS.length ? `${SUBS.length} ${SUBS.length === 1 ? 'person' : 'people'} on the list.` : 'Nobody has joined yet.';
+  loadStats();
+}
+$('#refreshSubs').addEventListener('click', loadSubs);
+$('#subList').addEventListener('click', async e => {
+  const b = e.target.closest('[data-sub]'); if (!b || !sb) return;
+  if (!confirm('Remove ' + b.dataset.sub + ' from the list?')) return;
+  const { error } = await sb.from('subscribers').delete().eq('email', b.dataset.sub);
+  if (error){ toast('Could not remove: ' + error.message); return; }
+  loadSubs();
+});
+$('#exportSubs').addEventListener('click', () => {
+  if (!SUBS.length){ toast('Nothing to export yet'); return; }
+  const q = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+  const csv = ['email,joined,source', ...SUBS.map(s => [q(s.email), q(s.created_at), q(s.source)].join(','))].join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+  a.download = `tobi-simon-mailing-list-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+});
+
+/* ═══════════════════════════════════════════════════════════
+   RENDER ALL + WIRING
+   ═══════════════════════════════════════════════════════════ */
+function renderAdmin(){
+  renderReleases(); renderVideos(); renderShows(); renderMediaEditors();
+  renderNumbers(); renderProfile(); renderMilestones();
+}
+
+/* every Remove click on a release */
+$('#relList').addEventListener('click', async e => {
+  const b = e.target.closest('[data-rel]'); if (!b) return;
+  const i = Number(b.dataset.i);
+  if (b.dataset.rel === 'edit'){ openRelease(i); return; }
+  const a = DATA.albums[i];
+  if (!confirm(`Remove “${a.title}” and its tracks from the site?`)) return;
+  DATA.albums.splice(i, 1);
+  $('#relEditor').hidden = true; relIdx = null;
+  renderReleases();
+  if (await persist()) removeStored(a.artPath);
+});
+
+$('#loginForm').addEventListener('submit', async e => {
+  e.preventDefault();
   const msg = $('#loginMsg');
   msg.dataset.kind = ''; msg.textContent = 'Checking…';
   const res = await signIn($('#email').value.trim(), $('#pass').value);
@@ -603,137 +1034,31 @@ $('#doLogin').addEventListener('click', async () => {
     return;
   }
   msg.textContent = ''; $('#pass').value = '';
-  signedIn = true;
+  if (sb) await loadContent();   // always edit the latest saved version
   showDashboard();
 });
-$('#pass').addEventListener('keydown', e => { if (e.key === 'Enter') $('#doLogin').click(); });
 
 $('#signOut').addEventListener('click', async () => {
   if (sb) await sb.auth.signOut();
-  signedIn = false;
   showLogin();
   toast('Signed out');
 });
 
 $('#resetContent').addEventListener('click', () => {
-  if (!confirm('Replace text, music, stats, achievements and tours with the built-in content?\n\nYour uploaded photos and videos are KEPT — only the written content is reset.')) return;
-  const keepMedia = structuredClone(DATA.media);   // uploads are not in DEFAULTS; never discard them
+  if (!confirm('Replace text, music, numbers, milestones, shows and videos with the built-in content?\n\nUploaded photos and clips are KEPT.')) return;
+  const keepMedia = structuredClone(DATA.media);
   DATA = structuredClone(DEFAULTS);
   DATA.media = keepMedia;
   renderAdmin(); persist();
-  toast('Built-in content restored — uploads kept');
-});
-
-$('#saveStats').addEventListener('click', () => {
-  $$('#statEditor .statrow__i').forEach(input => {
-    if (input.disabled) return;
-    const p = DATA.platforms.find(x => x.id === input.dataset.pid);
-    if (p) p.value = Number(input.value) || 0;
-  });
-  stamp(); snapshot(); renderAdmin(); persist();
-});
-
-$('#refetch').addEventListener('click', () => {
-  toast('No live endpoint connected yet');
-});
-
-$('#tsPlatform').addEventListener('change', renderTopSongs);
-$('#addTs').addEventListener('click', () => {
-  const title = $('#tsTitle').value.trim();
-  if (!title){ toast('Give the song a title'); return; }
-  const p = DATA.platforms.find(x => x.id === $('#tsPlatform').value);
-  if (!p) return;
-  p.top = Array.isArray(p.top) ? p.top : [];
-  p.top.push({ title, plays: Number($('#tsPlays').value) || 0 });
-  p.top.sort((a,b) => b.plays - a.plays);
-  $('#tsTitle').value = $('#tsPlays').value = '';
-  renderTopSongs(); persist();
-});
-
-$('#addAlbum').addEventListener('click', () => {
-  const title = $('#aTitle').value.trim();
-  if (!title){ toast('Give the album a title'); return; }
-  DATA.albums.push({ title, year: $('#aYear').value.trim(),
-                     art: $('#aArt').value.trim(), tracks: [] });
-  $('#aTitle').value = $('#aYear').value = $('#aArt').value = '';
-  renderAdmin(); persist();
-});
-
-$('#trAlbum').addEventListener('change', renderTrackList);
-$('#addTrack').addEventListener('click', () => {
-  const title = $('#trTitle').value.trim();
-  if (!title){ toast('Give the track a title'); return; }
-  const ai = Number($('#trAlbum').value);
-  if (!DATA.albums[ai]) return;
-  DATA.albums[ai].tracks = DATA.albums[ai].tracks || [];
-  DATA.albums[ai].tracks.push({ title, embed: $('#trEmbed').value.trim() });
-  $('#trTitle').value = $('#trEmbed').value = '';
-  renderTrackList(); persist();
-});
-
-$('#addAch').addEventListener('click', () => {
-  const title = $('#achTitle').value.trim();
-  if (!title){ toast('Give the achievement a title'); return; }
-  DATA.achievements.unshift({ date: $('#achDate').value.trim() || '—', title,
-                              text: $('#achText').value.trim() });
-  $('#achDate').value = $('#achTitle').value = $('#achText').value = '';
-  renderAdmin(); persist();
-});
-
-$('#addTour').addEventListener('click', () => {
-  const venue = $('#tVenue').value.trim();
-  if (!venue){ toast('Give the date a venue'); return; }
-  DATA.tours.unshift({ date: $('#tDate').value.trim() || '—', venue,
-                       city: $('#tCity').value.trim(), kind: $('#tKind').value });
-  $('#tDate').value = $('#tVenue').value = $('#tCity').value = '';
-  renderAdmin(); persist();
-});
-
-$('#saveProfile').addEventListener('click', () => {
-  DATA.profile.role  = $('#pRole').value.trim();
-  DATA.profile.email = $('#pEmail').value.trim();
-  $$('[data-link]').forEach(input => {
-    const p = DATA.platforms.find(x => x.id === input.dataset.link);
-    if (p) p.url = input.value.trim();
-  });
-  persist();
-});
-
-$('#dash').addEventListener('click', e => {
-  const btn = e.target.closest('[data-del]');
-  if (!btn) return;
-  const i = Number(btn.dataset.i);
-  switch (btn.dataset.del){
-    case 'album': DATA.albums.splice(i,1); renderAdmin(); persist(); break;
-    case 'ach':   DATA.achievements.splice(i,1); renderAdmin(); persist(); break;
-    case 'tour':  DATA.tours.splice(i,1); renderAdmin(); persist(); break;
-    case 'story': deleteMedia('story', i); break;
-    case 'voice': deleteMedia('voice', i); break;
-    case 'ts': {
-      const p = DATA.platforms.find(x => x.id === $('#tsPlatform').value);
-      if (p && Array.isArray(p.top)) p.top.splice(i,1);
-      renderTopSongs(); persist();
-      break;
-    }
-    case 'track': {
-      const ai = Number($('#trAlbum').value);
-      if (DATA.albums[ai]?.tracks) DATA.albums[ai].tracks.splice(i,1);
-      renderTrackList(); persist();
-      break;
-    }
-  }
 });
 
 $('#copyJson').addEventListener('click', async () => {
   try{
     await navigator.clipboard.writeText(JSON.stringify(DATA, null, 2));
     toast('Copied to clipboard');
-  }catch{ toast('Copy blocked — open the console and run copy(DATA)'); }
+  }catch{ toast('Copy blocked. Open the console and run copy(DATA)'); }
 });
 
-/* ═══════════════════════════════════════════════════════════
-   BOOT
-   ═══════════════════════════════════════════════════════════ */
 initSupabase();
 </script>
 </body>

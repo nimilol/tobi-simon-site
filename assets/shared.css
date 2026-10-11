@@ -1,75 +1,167 @@
 /* ═══════════════════════════════════════════════════════════
-   SHARED — tokens, resets and small components used by both
-   index.html (public site) and admin.html (owner dashboard).
-   Change a token here and it updates on both pages.
+   SHARED — tokens, resets, the liquid-glass system and small
+   components used by every public page AND admin.html.
+   Change a token here and it updates everywhere.
    ═══════════════════════════════════════════════════════════ */
 
 :root{
-  --ink:#16130F; --umber:#241D17; --umber-lo:#1C1712;
-  --cognac:#B8763E; --brass:#E0A868;
-  --concrete:#8C8781; --graphite:#3A3733; --chalk:#EDE9E4;
-  --wash:linear-gradient(140deg,#B8763E 0%,#6B5A4D 46%,#3A3733 100%);
+  /* palette: near-black + warm gold */
+  --ink:#0B0A09;          /* page background */
+  --panel:#141210;        /* solid surfaces */
+  --panel-2:#1C1916;
+  --line:rgba(255,244,228,.09);
+  --line-2:rgba(255,244,228,.16);
+  --gold:#D9A45B;         /* the one accent */
+  --gold-hi:#F0C27F;      /* numbers, hover */
+  --chalk:#F3EEE7;        /* headings */
+  --text:#BDB5AB;         /* body */
+  --mute:#8A837A;         /* secondary */
+  --bad:#E08A6E;
+
+  /* aliases kept so older component names keep working */
+  --umber:var(--panel); --umber-lo:#100E0C; --cognac:var(--gold); --brass:var(--gold-hi);
+  --concrete:var(--mute); --graphite:#2A2622;
+
+  /* ambient light — site.js tints this from the cover on screen */
+  --amb:217,164,91;
+
+  /* liquid glass */
+  --glass-fill:linear-gradient(180deg,rgba(255,250,242,.10) 0%,rgba(255,250,242,.035) 100%);
+  --glass-line:rgba(255,248,238,.13);
+  --glass-blur:blur(22px) saturate(170%);
+  --glass-shadow:inset 0 1px 0 rgba(255,255,255,.20), inset 0 -1px 0 rgba(0,0,0,.30),
+                 0 12px 34px rgba(0,0,0,.38);
+
   --display:'Bricolage Grotesque',system-ui,sans-serif;
   --body:'Instrument Sans',system-ui,sans-serif;
   --mono:'Space Mono',ui-monospace,monospace;
-  --gut:clamp(1.25rem,4vw,3.5rem);
-  --max:1240px; --nav-h:68px; --r:4px;
+
+  --gut:clamp(1rem,4vw,3.5rem);
+  --max:1240px; --nav-h:76px;
+  --r:14px;               /* the one radius language: 14 / 10 for small controls */
+  --r-sm:10px;
+  --spring:cubic-bezier(.34,1.45,.5,1);
+  --out:cubic-bezier(.2,.8,.2,1);
 }
 
 *,*::before,*::after{box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:calc(var(--nav-h) + 12px)}
-body{margin:0;background:var(--ink);color:var(--concrete);
-  font-family:var(--body);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--nav-h) + 12px);background:var(--ink)}
+body{margin:0;background:var(--ink);color:var(--text);
+  font-family:var(--body);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;
+  overflow-x:hidden}
 body[data-locked="true"]{overflow:hidden}
 img{max-width:100%;display:block}
 a{color:inherit;text-decoration:none}
-button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
+button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;padding:0}
 input,textarea,select{font:inherit}
 iframe{border:0;display:block}
-:focus-visible{outline:2px solid var(--brass);outline-offset:3px}
+:focus-visible{outline:2px solid var(--gold-hi);outline-offset:3px}
+::selection{background:rgba(217,164,91,.35);color:var(--chalk)}
 
 .shell{width:100%;max-width:var(--max);margin-inline:auto;padding-inline:var(--gut)}
-.section{padding-block:clamp(4.5rem,9vw,8rem);position:relative}
-.section--tight{padding-block:clamp(3rem,6vw,5rem)}
-h1,h2,h3,h4{font-family:var(--display);color:var(--chalk);margin:0;line-height:1.02;letter-spacing:-.025em}
-.eyebrow{font-family:var(--mono);font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;
-  color:var(--cognac);margin:0 0 1.1rem;display:flex;align-items:center;gap:.7rem}
-.eyebrow::after{content:"";flex:1;height:1px;background:var(--graphite)}
-.h-sec{font-size:clamp(2rem,5.2vw,3.4rem);font-weight:800}
-.lede{max-width:58ch;margin-top:1.1rem;font-size:1.05rem}
-.skip{position:absolute;left:-9999px;top:0;z-index:300;background:var(--brass);
-  color:var(--ink);padding:.7rem 1.1rem;font-weight:600}
+h1,h2,h3,h4{font-family:var(--display);color:var(--chalk);margin:0;line-height:1.04;letter-spacing:-.025em}
+.skip{position:absolute;left:-9999px;top:0;z-index:300;background:var(--gold-hi);
+  color:var(--ink);padding:.7rem 1.1rem;font-weight:600;border-radius:var(--r-sm)}
 .skip:focus{left:1rem;top:1rem}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
-/* form + status components (login card, admin editors) */
+/* ═══════════════════════════════════════════════════════════
+   LIQUID GLASS
+   A translucent fill that blurs and saturates whatever is behind
+   it, a lit top edge, a shaded bottom edge, and a specular rim
+   drawn by ::before. Chromium also gets real refraction through
+   the SVG filter #lg (see site.js → html.lg-refract).
+   ═══════════════════════════════════════════════════════════ */
+.glass{position:relative;isolation:isolate;
+  background:var(--glass-fill);
+  -webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);
+  border:1px solid var(--glass-line);box-shadow:var(--glass-shadow)}
+.glass::before{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;pointer-events:none;
+  background:linear-gradient(135deg,rgba(255,255,255,.42) 0%,rgba(255,255,255,0) 32%,
+                                    rgba(255,255,255,0) 68%,rgba(255,255,255,.16) 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;z-index:1}
+.glass--strong{background:linear-gradient(180deg,rgba(30,27,24,.62),rgba(18,16,14,.55))}
+html.lg-refract .glass--refract{
+  -webkit-backdrop-filter:url(#lg) blur(16px) saturate(170%);backdrop-filter:url(#lg) blur(16px) saturate(170%)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .glass{background:rgba(22,20,18,.94)}
+}
+
+/* Press: the iOS "squish". site.js sets --mx/--my to the pointer and
+   toggles .is-pressed; a light bloom follows the finger. */
+.press{position:relative;overflow:hidden;transform:translateZ(0);
+  transition:transform .42s var(--spring),background-color .2s,border-color .2s,color .2s}
+.press::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:radial-gradient(160px circle at var(--mx,50%) var(--my,50%),rgba(255,248,236,.22),transparent 60%);
+  opacity:0;transition:opacity .35s}
+.press:hover::after{opacity:.55}
+.press.is-pressed{transform:scale(.965);transition-duration:.12s}
+.press.is-pressed::after{opacity:1;transition-duration:.08s}
+.ripple{position:absolute;border-radius:50%;pointer-events:none;width:12px;height:12px;margin:-6px 0 0 -6px;
+  background:rgba(255,248,236,.32);transform:scale(0);animation:ripple .6s var(--out) forwards}
+@keyframes ripple{to{transform:scale(28);opacity:0}}
+
+/* ═══════════════════════════════════════════════════════════
+   BUTTONS
+   ═══════════════════════════════════════════════════════════ */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.55rem;
+  font-family:var(--body);font-weight:600;font-size:.92rem;line-height:1;
+  padding:.85rem 1.25rem;border-radius:var(--r-sm);color:var(--chalk);white-space:nowrap}
+.btn svg{width:16px;height:16px;flex:0 0 auto}
+.btn--gold{background:var(--gold);color:#1A1208;box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 8px 24px rgba(217,164,91,.18)}
+.btn--gold:hover{background:var(--gold-hi)}
+.btn--glass{color:var(--chalk)}
+.btn--glass:hover{border-color:var(--line-2)}
+.btn--quiet{color:var(--text);padding-inline:.4rem}
+.btn--quiet:hover{color:var(--chalk)}
+.btn--sm{padding:.6rem .9rem;font-size:.84rem}
+
+/* ═══════════════════════════════════════════════════════════
+   FORMS (newsletter, contact, admin)
+   ═══════════════════════════════════════════════════════════ */
 .field{margin-bottom:1rem}
-.field__l{display:block;font-family:var(--mono);font-size:.64rem;letter-spacing:.15em;
-  text-transform:uppercase;color:var(--concrete);margin-bottom:.45rem}
-.field__i{width:100%;background:var(--ink);border:1px solid var(--graphite);border-radius:var(--r);
-  padding:.72rem .85rem;color:var(--chalk);font-size:.92rem}
-.field__i:focus{border-color:var(--cognac);outline:none}
-textarea.field__i{min-height:82px;resize:vertical}
-.note{font-family:var(--mono);font-size:.66rem;line-height:1.7;color:var(--concrete);margin-top:1.1rem}
-.msg{font-family:var(--mono);font-size:.7rem;margin-top:.9rem;min-height:1.1rem;line-height:1.5}
-.msg[data-kind="bad"]{color:#D98A6B}
-.msg[data-kind="ok"]{color:var(--brass)}
+.field__l{display:block;font-size:.8rem;font-weight:600;color:var(--text);margin-bottom:.4rem}
+.field__h{font-size:.78rem;color:var(--mute);margin-top:.35rem;line-height:1.5}
+.field__i{width:100%;background:rgba(255,250,242,.04);border:1px solid var(--line-2);border-radius:var(--r-sm);
+  padding:.75rem .9rem;color:var(--chalk);font-size:.95rem;transition:border-color .2s,background .2s}
+.field__i::placeholder{color:#6F6961}
+.field__i:focus{border-color:var(--gold);background:rgba(255,250,242,.06);outline:none}
+textarea.field__i{min-height:96px;resize:vertical}
+select.field__i{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--mute) 50%),
+  linear-gradient(135deg,var(--mute) 50%,transparent 50%);
+  background-position:calc(100% - 18px) 52%,calc(100% - 13px) 52%;background-size:5px 5px;background-repeat:no-repeat;
+  padding-right:2.2rem}
+select.field__i option{background:var(--panel);color:var(--chalk)}
+input[type="file"].field__i{padding:.6rem .7rem;font-size:.85rem}
+input[type="date"].field__i{color-scheme:dark}
+.note{font-size:.82rem;line-height:1.6;color:var(--mute);margin-top:1rem}
+.msg{font-size:.85rem;margin-top:.8rem;min-height:1.2rem;line-height:1.5}
+.msg[data-kind="bad"]{color:var(--bad)}
+.msg[data-kind="ok"]{color:var(--gold-hi)}
 
-.mini{font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;
-  padding:.5rem .8rem;border:1px solid var(--graphite);border-radius:var(--r);color:var(--chalk)}
-.mini:hover{border-color:var(--cognac);color:var(--brass)}
-.mini--solid{background:var(--cognac);color:var(--ink);border-color:var(--cognac);font-weight:700}
-.mini--solid:hover{color:var(--ink);opacity:.9}
+/* small admin controls */
+.mini{display:inline-flex;align-items:center;gap:.4rem;font-size:.82rem;font-weight:600;
+  padding:.55rem .85rem;border:1px solid var(--line-2);border-radius:var(--r-sm);color:var(--chalk)}
+.mini:hover{border-color:var(--gold);color:var(--gold-hi)}
+.mini--solid{background:var(--gold);color:#1A1208;border-color:var(--gold)}
+.mini--solid:hover{background:var(--gold-hi);color:#1A1208}
 .mini-row{display:flex;gap:.55rem;flex-wrap:wrap;margin-top:.9rem}
-.item{display:flex;justify-content:space-between;gap:.8rem;align-items:flex-start;
-  padding:.7rem 0;border-bottom:1px solid var(--graphite)}
-.item__t{font-size:.85rem;color:var(--chalk)}
-.item__s{font-family:var(--mono);font-size:.64rem;color:var(--concrete);margin-top:.15rem;
-  word-break:break-all;line-height:1.5}
-.item__x{font-family:var(--mono);font-size:.66rem;color:var(--concrete);flex:0 0 auto}
-.item__x:hover{color:#D98A6B}
+.item{display:flex;justify-content:space-between;gap:.8rem;align-items:center;
+  padding:.7rem 0;border-bottom:1px solid var(--line)}
+.item__t{font-size:.92rem;color:var(--chalk)}
+.item__s{font-size:.78rem;color:var(--mute);margin-top:.1rem;word-break:break-all;line-height:1.5}
+.item__x{font-size:.8rem;color:var(--mute);flex:0 0 auto;padding:.3rem .4rem;border-radius:8px}
+.item__x:hover{color:var(--bad)}
 
-.toast{position:fixed;left:50%;bottom:1.6rem;transform:translate(-50%,180%);z-index:200;
-  background:var(--brass);color:var(--ink);font-family:var(--mono);font-size:.72rem;font-weight:700;
-  padding:.75rem 1.3rem;border-radius:var(--r);transition:transform .32s cubic-bezier(.2,.8,.2,1);
+.toast{position:fixed;left:50%;bottom:1.6rem;transform:translate(-50%,180%);z-index:400;
+  color:var(--chalk);font-size:.88rem;font-weight:600;border-radius:var(--r);
+  padding:.8rem 1.3rem;transition:transform .45s var(--spring);
   max-width:min(90vw,460px);text-align:center;line-height:1.5}
 .toast[data-show="true"]{transform:translate(-50%,0)}
+.toast:not([data-show="true"]){visibility:hidden;transition:transform .45s var(--spring),visibility 0s .45s}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}

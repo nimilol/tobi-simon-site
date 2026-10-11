@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache">
+<title>Music — Tobi Simon</title>
+<meta name="description" content="Albums and singles by AfroGospel artist Tobi Simon. Play any track here, or stream on Audiomack, Spotify, Apple Music and YouTube Music.">
+<meta name="theme-color" content="#0B0A09">
+<meta property="og:title" content="Music — Tobi Simon">
+<meta property="og:description" content="Albums and singles by AfroGospel artist Tobi Simon.">
+<meta property="og:image" content="assets/img/trust.jpg">
+<link rel="icon" href="assets/img/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/shared.css?v=20261011">
+<link rel="stylesheet" href="assets/site.css?v=20261011">
+</head>
+<body data-page="music">
+
+<main id="main">
+  <header class="shell phead">
+    <h1>Music</h1>
+    <p id="intro"></p>
+  </header>
+
+  <section class="shell" aria-label="Releases">
+    <div id="musicFlow"></div>
+    <article class="release glass" id="release" aria-live="polite"></article>
+  </section>
+
+  <section class="shell sec" id="numbers">
+    <div class="sec__top">
+      <div>
+        <h2 class="sec__h">Where people listen</h2>
+        <p class="sec__p">Ranked by audience. Open a platform to see the songs leading it.</p>
+      </div>
+    </div>
+    <div class="ladder" id="ladder"></div>
+    <p class="stamp" id="stamp"></p>
+  </section>
+</main>
+
+<script type="module">
+import { onData, $, $$, esc, PLAY, icon, playTrack, nowPlaying, ambientFrom, releaseCard, plural,
+         compact, REDUCED } from './assets/site.js?v=20261011';
+import { coverflow } from './assets/coverflow.js?v=20261011';
+import { releasesNewestFirst } from './assets/shared-data.js?v=20261011';
+
+let DATA, REL = [], flow = null, first = true;
+const LINK_NAMES = { audiomack:'Audiomack', spotify:'Spotify', apple:'Apple Music', youtube:'YouTube Music' };
+
+function intro(){
+  const years = (DATA.albums || []).map(a => Number(a.year)).filter(Boolean);
+  const nAlb = (DATA.albums || []).filter(a => (a.kind || 'Album') === 'Album').length;
+  const nSin = (DATA.albums || []).length - nAlb;
+  const parts = [nAlb && plural(nAlb, 'album'), nSin && plural(nSin, 'single')].filter(Boolean);
+  $('#intro').textContent = parts.length
+    ? `${parts.join(' and ')}${years.length ? ' since ' + Math.min(...years) : ''}. Tap a track to play it right here.`
+    : '';
+}
+
+function detail(i){
+  const { a, i: ai } = REL[i];
+  const tracks = a.tracks || [];
+  const on = nowPlaying();
+  /* streaming buttons: this release's own links first, else the artist profiles */
+  const links = Object.keys(LINK_NAMES).map(id => {
+    const url = a.links?.[id] || (DATA.platforms || []).find(p => p.id === id)?.url;
+    return url ? `<a class="btn btn--glass btn--sm glass press" href="${esc(url)}" target="_blank" rel="noopener">${icon(id)} ${LINK_NAMES[id]}</a>` : '';
+  }).join('');
+
+  $('#release').innerHTML = `
+    <div class="release__art">${a.art ? `<img src="${esc(a.art)}" alt="${esc(a.title)} cover" onerror="this.remove()">` : ''}</div>
+    <div>
+      <div class="release__k">${esc(a.kind || 'Album')}${a.year ? ', ' + esc(a.year) : ''} — ${plural(tracks.length, 'track')}</div>
+      <h2>${esc(a.title)}</h2>
+      ${tracks.length ? `<ol class="trks">${tracks.map((t, ti) => `
+        <li><button class="trk press" data-ai="${ai}" data-ti="${ti}"
+            data-playing="${on && on.ai === ai && on.ti === ti}">
+          <span class="trk__n">${String(ti + 1).padStart(2, '0')}</span>
+          <span class="trk__t">${esc(t.title)}</span>
+          <span class="trk__go">${PLAY}</span></button></li>`).join('')}</ol>`
+        : '<p class="empty">Tracks for this release are coming soon.</p>'}
+      ${links ? `<div class="release__actions">${links}</div>` : ''}
+    </div>`;
+}
+
+function ladder(){
+  const list = [...(DATA.platforms || [])].filter(p => p.value > 0).sort((a, b) => b.value - a.value);
+  const top = Math.max(1, ...list.map(p => p.value));
+  $('#ladder').innerHTML = list.map(p => {
+    const songs = (p.top || []).slice(0, 5);
+    return `<details class="rung">
+      <summary>
+        <span class="rung__ico">${icon(p.id)}</span>
+        <span class="rung__name">${esc(p.name)}</span>
+        <span class="rung__bar"><span class="rung__fill" data-pct="${Math.max(2, p.value / top * 100)}"></span></span>
+        <span class="rung__n">${compact(p.value)}<small>${esc(p.unit)}</small></span>
+      </summary>
+      <div class="rung__top">${songs.length
+        ? songs.map(s => `<div class="rung__song"><span>${esc(s.title)}</span><span>${compact(s.plays)}</span></div>`).join('')
+        : `<p class="empty" style="margin:0">No song breakdown for ${esc(p.name)} yet.</p>`}</div>
+    </details>`;
+  }).join('');
+  $('#stamp').textContent = DATA.updated ? 'Figures last updated ' + DATA.updated + '.' : '';
+
+  /* the bars grow once, when the ladder scrolls into view */
+  const grow = () => $$('.rung__fill').forEach(f => f.style.width = f.dataset.pct + '%');
+  if (REDUCED || !('IntersectionObserver' in window)) return grow();
+  const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)){ grow(); io.disconnect(); } }, { threshold: .25 });
+  io.observe($('#ladder'));
+}
+
+onData(D => {
+  DATA = D;
+  REL = releasesNewestFirst(DATA.albums);
+  intro();
+  const want = Number(new URLSearchParams(location.search).get('r'));
+  const fromUrl = REL.findIndex(r => r.i === want);
+  const keep = flow ? Math.min(flow.index, REL.length - 1) : Math.max(0, fromUrl);
+  flow = coverflow($('#musicFlow'), {
+    items: REL, label: 'Releases', start: keep, intro: first,
+    render: ({ a }) => releaseCard(a),
+    onChange: i => { detail(i); ambientFrom(REL[i].a.art); },
+    onActivate: () => $('#release').scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'center' })
+  });
+  first = false;
+  ladder();
+});
+
+document.addEventListener('click', e => {
+  const t = e.target.closest('.trk');
+  if (t){ playTrack(Number(t.dataset.ai), Number(t.dataset.ti)); return; }
+  const card = e.target.closest('#musicFlow [data-play]');
+  if (card) playTrack(REL[Number(card.closest('.cf__item').dataset.i)].i, 0);
+});
+document.addEventListener('ts:playing', e => {
+  $$('.trk').forEach(b => b.dataset.playing = String(!!e.detail &&
+    Number(b.dataset.ai) === e.detail.ai && Number(b.dataset.ti) === e.detail.ti));
+});
+</script>
+</body>
+</html>
